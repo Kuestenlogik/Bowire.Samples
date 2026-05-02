@@ -1,0 +1,107 @@
+syntax = "proto3";
+
+// Harbor Control Center — gRPC surface.
+//
+// One service covers every gRPC call type so the Bowire samples stay
+// minimal while still showcasing Unary, Server-Streaming, Client-
+// Streaming and Bidirectional-Streaming on the same schema.
+
+option csharp_namespace = "Kuestenlogik.Bowire.Samples.Combined.Grpc";
+
+package harbor;
+
+// ---------- Common messages ----------
+
+enum PortCallStatus {
+  UNSPECIFIED = 0;
+  SCHEDULED   = 1;
+  APPROACHING = 2;
+  DOCKED      = 3;
+  DEPARTING   = 4;
+  COMPLETED   = 5;
+  CANCELLED   = 6;
+}
+
+enum CraneStatus {
+  CRANE_UNSPECIFIED = 0;
+  IDLE              = 1;
+  LIFTING           = 2;
+  MOVING            = 3;
+  MAINTENANCE       = 4;
+}
+
+message PortCallMsg {
+  int32  id             = 1;
+  int32  ship_id        = 2;
+  int32  dock_number    = 3;
+  int64  scheduled_arrival_unix_s = 4;
+  PortCallStatus status = 5;
+  string notes          = 6;
+}
+
+message SchedulePortCallRequest {
+  int32  ship_id        = 1;
+  int32  dock_number    = 2;
+  int64  scheduled_arrival_unix_s = 3;
+  string cargo_operation = 4;    // "Loading" / "Unloading" / "Both" / "None"
+}
+
+message SchedulePortCallReply {
+  PortCallMsg port_call = 1;
+}
+
+// ---------- Unary ----------
+// Plan a visit. The dispatcher picks a dock and the harbor writes a new
+// PortCall in Scheduled state.
+
+// ---------- Server-Stream ----------
+// Watch one crane's telemetry (position, lift weight) tick-by-tick.
+message WatchCraneRequest {
+  int32 crane_id = 1;
+}
+message CraneTick {
+  int32  crane_id      = 1;
+  CraneStatus status   = 2;
+  double boom_angle_deg = 3;
+  double load_tonnes   = 4;
+  int64  timestamp_unix_ms = 5;
+}
+
+// ---------- Client-Stream ----------
+// Upload a stream of container entries to register a shipment.
+message ContainerEntry {
+  string container_id = 1;
+  double weight_kg    = 2;
+  string owner        = 3;
+  int32  for_ship_id  = 4;
+}
+message UploadManifestReply {
+  int32 received   = 1;
+  int32 accepted   = 2;
+  int32 duplicates = 3;
+}
+
+// ---------- Bidi ----------
+// Harbor radio: operators exchange short text messages with the
+// captain during approach / docking.
+message RadioMessage {
+  string  speaker   = 1;   // "Harbor" / "Ship-101" etc.
+  string  text      = 2;
+  int64   timestamp_unix_ms = 3;
+}
+
+// ---------- Services ----------
+
+service HarborService {
+  // Unary
+  rpc SchedulePortCall (SchedulePortCallRequest) returns (SchedulePortCallReply);
+
+  // Server streaming
+  rpc WatchCrane (WatchCraneRequest) returns (stream CraneTick);
+
+  // Client streaming
+  rpc UploadManifest (stream ContainerEntry) returns (UploadManifestReply);
+
+  // Bidirectional
+  rpc HarborRadio (stream RadioMessage) returns (stream RadioMessage);
+}

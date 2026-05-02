@@ -1,0 +1,118 @@
+syntax = "proto3";
+
+// Harbor gRPC surface — isolated sample showing every gRPC call type
+// against the shared harbor domain. Four RPCs on one service:
+//
+//   Unary           SchedulePortCall
+//   Server stream   WatchCrane
+//   Client stream   UploadManifest
+//   Bidirectional   HarborRadio
+//
+// Plus a few supporting messages (port-call lookup, fleet listing).
+
+option csharp_namespace = "Kuestenlogik.Bowire.Samples.Grpc.Protos";
+
+package harbor;
+
+// ---------- Enums ----------
+
+enum PortCallStatus {
+  UNSPECIFIED = 0;
+  SCHEDULED   = 1;
+  APPROACHING = 2;
+  DOCKED      = 3;
+  DEPARTING   = 4;
+  COMPLETED   = 5;
+  CANCELLED   = 6;
+}
+
+enum CraneStatus {
+  CRANE_UNSPECIFIED = 0;
+  IDLE              = 1;
+  LIFTING           = 2;
+  MOVING            = 3;
+  MAINTENANCE       = 4;
+}
+
+// ---------- Common messages ----------
+
+message PortCallMsg {
+  int32           id                      = 1;
+  int32           ship_id                 = 2;
+  int32           dock_number             = 3;
+  int64           scheduled_arrival_unix_s = 4;
+  PortCallStatus  status                  = 5;
+  string          notes                   = 6;
+}
+
+// ---------- Unary ----------
+
+message SchedulePortCallRequest {
+  int32  ship_id                 = 1;
+  int32  dock_number             = 2;
+  int64  scheduled_arrival_unix_s = 3;
+  string cargo_operation         = 4;
+}
+
+message SchedulePortCallReply {
+  PortCallMsg port_call = 1;
+}
+
+message GetPortCallRequest  { int32 id = 1; }
+message ListPortCallsRequest { PortCallStatus filter_status = 1; }
+message ListPortCallsReply   { repeated PortCallMsg port_calls = 1; }
+
+// ---------- Server streaming ----------
+
+message WatchCraneRequest {
+  int32 crane_id = 1;
+}
+
+message CraneTick {
+  int32       crane_id          = 1;
+  CraneStatus status            = 2;
+  double      boom_angle_deg    = 3;
+  double      load_tonnes       = 4;
+  int64       timestamp_unix_ms = 5;
+}
+
+// ---------- Client streaming ----------
+
+message ContainerEntry {
+  string container_id = 1;
+  double weight_kg    = 2;
+  string owner        = 3;
+  int32  for_ship_id  = 4;
+}
+
+message UploadManifestReply {
+  int32 received   = 1;
+  int32 accepted   = 2;
+  int32 duplicates = 3;
+}
+
+// ---------- Bidirectional streaming ----------
+
+message RadioMessage {
+  string speaker           = 1;
+  string text              = 2;
+  int64  timestamp_unix_ms = 3;
+}
+
+// ---------- Service ----------
+
+service HarborService {
+  // Unary — one request, one reply.
+  rpc SchedulePortCall (SchedulePortCallRequest) returns (SchedulePortCallReply);
+  rpc GetPortCall      (GetPortCallRequest)      returns (PortCallMsg);
+  rpc ListPortCalls    (ListPortCallsRequest)    returns (ListPortCallsReply);
+
+  // Server streaming — one request, many replies over time.
+  rpc WatchCrane (WatchCraneRequest) returns (stream CraneTick);
+
+  // Client streaming — many requests, one reply at the end.
+  rpc UploadManifest (stream ContainerEntry) returns (UploadManifestReply);
+
+  // Bidirectional — many requests, many replies, interleaved.
+  rpc HarborRadio (stream RadioMessage) returns (stream RadioMessage);
+}

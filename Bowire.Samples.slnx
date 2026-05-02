@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Kuestenlogik.Bowire.Samples.Shared/Kuestenlogik.Bowire.Samples.Shared.csproj" />
+    <Project Path="src/Kuestenlogik.Bowire.Samples.Combined/Kuestenlogik.Bowire.Samples.Combined.csproj" />
+    <Project Path="src/Kuestenlogik.Bowire.Samples.Grpc/Kuestenlogik.Bowire.Samples.Grpc.csproj" />
+    <Project Path="src/Kuestenlogik.Bowire.Samples.Rest/Kuestenlogik.Bowire.Samples.Rest.csproj" />
+    <Project Path="src/Kuestenlogik.Bowire.Samples.SignalR/Kuestenlogik.Bowire.Samples.SignalR.csproj" />
+    <Project Path="src/Kuestenlogik.Bowire.Samples.WebSocket/Kuestenlogik.Bowire.Samples.WebSocket.csproj" />
+    <Project Path="src/Kuestenlogik.Bowire.Samples.Sse/Kuestenlogik.Bowire.Samples.Sse.csproj" />
+    <Project Path="src/Kuestenlogik.Bowire.Samples.GraphQL/Kuestenlogik.Bowire.Samples.GraphQL.csproj" />
+    <Project Path="src/Kuestenlogik.Bowire.Samples.OData/Kuestenlogik.Bowire.Samples.OData.csproj" />
+    <Project Path="src/Kuestenlogik.Bowire.Samples.Mqtt/Kuestenlogik.Bowire.Samples.Mqtt.csproj" />
+    <Project Path="src/Kuestenlogik.Bowire.Samples.SocketIo/Kuestenlogik.Bowire.Samples.SocketIo.csproj" />
+    <Project Path="src/Kuestenlogik.Bowire.Samples.Mcp/Kuestenlogik.Bowire.Samples.Mcp.csproj" />
+  </Folder>
+</Solution>

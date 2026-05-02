@@ -1,0 +1,49 @@
+<Project>
+
+  <!-- ================================================================
+       Workaround: disable the broken Microsoft.AspNetCore.OpenApi 10.0.x
+       XmlComment source-generator.
+       ================================================================
+
+       The generator emits literal `mediaType.Example = jsonString.Parse();`
+       against `IOpenApiMediaType.Example`, which Microsoft.OpenApi 3.x
+       made interface-readonly. Bowire core pulls in Microsoft.OpenApi
+       3.5.3 transitively via Kuestenlogik.Bowire.Protocol.Rest, so
+       any sample that adds `Microsoft.AspNetCore.OpenApi` (for
+       AddOpenApi / MapOpenApi) gets the broken generated file and
+       fails to compile with CS0200.
+
+       Tracking issues (opened Nov 2025, no fix yet as of May 2026):
+         - https://github.com/microsoft/OpenAPI.NET/issues/2582
+         - https://github.com/microsoft/OpenAPI.NET/issues/2610
+         - https://github.com/dotnet/aspnetcore/issues/64317
+
+       Microsoft's own statement: ".NET 10 does not provide full support
+       for Microsoft.OpenApi 3.x, broader support is expected in a
+       future .NET release."
+
+       What this target does: removes the SourceGenerators DLL from the
+       analyzer set before CoreCompile. The runtime types (AddOpenApi,
+       MapOpenApi, transformer interfaces) come from a different DLL in
+       the same package and stay available — so endpoints still discover,
+       schemas still generate, only the auto-XML-doc-comment-harvesting
+       step is skipped.
+
+       What we lose: <summary>/<remarks>/<param> XML doc comments on
+       controller actions no longer auto-flow into /openapi/v1.json.
+       Workaround on the affected endpoints (only a handful in this
+       repo): use `MapGet(...).WithSummary("...").WithDescription("...")`
+       which goes through a different code path and is unaffected.
+
+       To remove this workaround once Microsoft fixes the source-gen:
+       just delete this whole <Target> element. The condition is a
+       no-op for projects that don't reference Microsoft.AspNetCore.OpenApi.
+       ================================================================ -->
+  <Target Name="WorkaroundOpenApiBrokenSourceGenerator" BeforeTargets="CoreCompile">
+    <ItemGroup>
+      <Analyzer Remove="@(Analyzer)"
+                Condition="'%(Filename)%(Extension)' == 'Microsoft.AspNetCore.OpenApi.SourceGenerators.dll'" />
+    </ItemGroup>
+  </Target>
+
+</Project>

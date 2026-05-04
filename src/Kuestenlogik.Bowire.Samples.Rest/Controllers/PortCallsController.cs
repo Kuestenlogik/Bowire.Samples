@@ -16,6 +16,7 @@ namespace Kuestenlogik.Bowire.Samples.Rest.Controllers;
 [ApiController]
 [Route("api/port-calls")]
 [Produces("application/json")]
+[Tags("Port Calls")]
 public sealed class PortCallsController(HarborStore store) : ControllerBase
 {
     /// GET /api/port-calls?status=Docked

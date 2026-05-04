@@ -13,6 +13,7 @@ namespace Kuestenlogik.Bowire.Samples.Combined.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/port-calls")]
+[Tags("Port Calls")]
 public sealed class PortCallsController(HarborStore store) : ControllerBase
 {
     [HttpGet]
@@ -78,6 +79,7 @@ public sealed class PortCallsController(HarborStore store) : ControllerBase
 
 [ApiController]
 [Route("api/ships")]
+[Tags("Ships")]
 public sealed class ShipsController(HarborStore store) : ControllerBase
 {
     [HttpGet] public IEnumerable<Ship> List() => store.Ships.Values;
@@ -88,6 +90,7 @@ public sealed class ShipsController(HarborStore store) : ControllerBase
 
 [ApiController]
 [Route("api/docks")]
+[Tags("Docks")]
 public sealed class DocksController(HarborStore store) : ControllerBase
 {
     [HttpGet] public IEnumerable<Dock> List() => store.Docks.Values;

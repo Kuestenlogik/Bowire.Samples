@@ -1,0 +1,76 @@
+// Copyright 2026 Küstenlogik
+// SPDX-License-Identifier: Apache-2.0
+//
+// Minimal Node.js Socket.IO server used by Kuestenlogik.Bowire.Samples.SocketIo.
+//
+// Usage (from this directory):
+//   npm install
+//   node server.js                  # listens on ws://localhost:3000
+//
+// Then point Bowire at it:
+//   bowire --url http://localhost:3000
+
+const { Server } = require('socket.io');
+
+const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
+const io = new Server(PORT, { cors: { origin: '*' } });
+
+// ---------- /harbor namespace ----------
+// Per-dock rooms, ack-callback patterns, server-emitted broadcasts. The
+// Bowire Socket.IO plugin lists every emitted event name as a method
+// the user can subscribe to.
+const harbor = io.of('/harbor');
+harbor.on('connection', (socket) => {
+    console.log('harbor connected:', socket.id);
+
+    socket.on('join-dock', (dockNumber, ack) => {
+        socket.join(`dock-${dockNumber}`);
+        if (typeof ack === 'function') ack({ ok: true, room: `dock-${dockNumber}` });
+    });
+
+    socket.on('radio', (msg, ack) => {
+        const dockNumber = msg && msg.dockNumber;
+        const text = msg && msg.text;
+        harbor.to(`dock-${dockNumber}`).emit('radio', {
+            from: socket.id,
+            text,
+            at: new Date().toISOString(),
+        });
+        if (typeof ack === 'function') ack({ delivered: true });
+    });
+
+    socket.on('disconnect', () => {
+        console.log('harbor disconnected:', socket.id);
+    });
+});
+
+// Root namespace — same broadcast on a shorter interval so a Bowire
+// client that connects with no namespace path (the default `/`) still
+// gets a populated stream. The Bowire Socket.IO plugin defaults to
+// the root namespace when no `nsp` metadata is provided; the
+// `/harbor` namespace above is the richer demo for clients that
+// configure it explicitly.
+const root = io.of('/');
+root.on('connection', (socket) => {
+    console.log('root connected:', socket.id);
+});
+
+// Broadcast a synthetic port-call-status update every second. Both
+// namespaces emit so the demo works regardless of which namespace the
+// Bowire client subscribed against.
+const STATUSES = ['Scheduled', 'Approaching', 'Docked', 'Departing', 'Completed'];
+setInterval(() => {
+    const payload = {
+        id: Math.floor(Math.random() * 1000),
+        shipId: 100 + Math.floor(Math.random() * 50),
+        dockNumber: 1 + Math.floor(Math.random() * 6),
+        status: STATUSES[Math.floor(Math.random() * STATUSES.length)],
+        at: new Date().toISOString(),
+    };
+    harbor.emit('port-call-changed', payload);
+    root.emit('port-call-changed', payload);
+}, 1000);
+
+console.log(`Bowire SocketIo sample server listening on ws://localhost:${PORT}`);
+console.log('Namespace: /harbor');
+console.log('Browse with: bowire --url http://localhost:' + PORT);

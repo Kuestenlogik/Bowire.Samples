@@ -1,0 +1,12 @@
+{
+  "name": "kuestenlogik.bowire.samples.socketio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Minimal Socket.IO server used by the Bowire Socket.IO sample. Browse with `bowire --url http://localhost:3000`.",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "socket.io": "^4.7.5"
+  }
+}

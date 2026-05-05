@@ -44,31 +44,20 @@ harbor.on('connection', (socket) => {
     });
 });
 
-// Root namespace — same broadcast on a shorter interval so a Bowire
-// client that connects with no namespace path (the default `/`) still
-// gets a populated stream. The Bowire Socket.IO plugin defaults to
-// the root namespace when no `nsp` metadata is provided; the
-// `/harbor` namespace above is the richer demo for clients that
-// configure it explicitly.
-const root = io.of('/');
-root.on('connection', (socket) => {
-    console.log('root connected:', socket.id);
-});
-
-// Broadcast a synthetic port-call-status update every second. Both
-// namespaces emit so the demo works regardless of which namespace the
-// Bowire client subscribed against.
+// Broadcast a synthetic port-call-status update every second on the
+// /harbor namespace only — Socket.IO's natural pattern is one
+// namespace per business domain. Bowire clients connect by either
+// passing `http://localhost:3000/harbor` as the URL or setting the
+// `X-Bowire-SocketIo-Namespace: /harbor` metadata header.
 const STATUSES = ['Scheduled', 'Approaching', 'Docked', 'Departing', 'Completed'];
 setInterval(() => {
-    const payload = {
+    harbor.emit('port-call-changed', {
         id: Math.floor(Math.random() * 1000),
         shipId: 100 + Math.floor(Math.random() * 50),
         dockNumber: 1 + Math.floor(Math.random() * 6),
         status: STATUSES[Math.floor(Math.random() * STATUSES.length)],
         at: new Date().toISOString(),
-    };
-    harbor.emit('port-call-changed', payload);
-    root.emit('port-call-changed', payload);
+    });
 }, 1000);
 
 console.log(`Bowire SocketIo sample server listening on ws://localhost:${PORT}`);

@@ -12,7 +12,10 @@ the workbench should:
 2. Start the server-streaming subscription.
 3. Notice that incoming `ShipUpdate` frames carry conventionally-named
    `lat` + `lng` fields whose values sit inside WGS84 range.
-4. **Auto-mount a Map tab** next to the streaming-frames pane.
+4. **Auto-mount a Map tab** next to the streaming-frames pane — *if
+   the optional `Kuestenlogik.Bowire.Extension.MapLibre` package is
+   installed*. Without it, the workbench shows a placeholder card
+   ("Install …Extension.MapLibre to render coordinates on a map").
 5. Render every incoming ship position as a pin, live, with one pin
    per ship and live-tracking updates per Hertz.
 
@@ -23,16 +26,26 @@ Look at what this sample does **not** ship:
 - No `[BowireExtension]` C# class.
 - No annotations beyond the proto file itself.
 
-The map widget appears purely because Bowire's built-in
-`Wgs84CoordinateDetector` matches the field names + value ranges. That
-is the pgAdmin pattern: shape-of-data drives viewer choice, not
-protocol-author opt-in.
+The framework finds the coordinates by content alone; *if* the
+MapLibre extension package is installed the map mounts automatically,
+otherwise a placeholder card invites installation. That is the pgAdmin
+pattern: shape-of-data drives viewer choice, not protocol-author
+opt-in — and the actual rendering rides its own opt-in package.
 
 ## Run it
 
 ```bash
 # Terminal 1 — start the sample.
 dotnet run --project src/Kuestenlogik.Bowire.Samples.SchemaSemantics
+
+# Optional — install the map widget extension so the auto-detected
+# coordinate.latitude / coordinate.longitude pairs render as pins on
+# a MapLibre canvas next to the streaming-frames pane. Without it the
+# workbench shows an "Install Kuestenlogik.Bowire.Extension.MapLibre"
+# placeholder card instead, and the data still flows through the
+# JSON view exactly as before — bowire core stays ~900 KB lighter
+# for users who never need geographic rendering.
+dotnet add package Kuestenlogik.Bowire.Extension.MapLibre
 
 # Terminal 2 — point a standalone bowire at the sample.
 # Native HTTP/2 transport:
@@ -51,10 +64,18 @@ at 1 Hz, three ships cycling round-robin (Aurora, Helgoland-Express,
 Containerschiff-7). Hamburg-Harbour coordinates, jittered slightly per
 tick so the pins drift live instead of sitting still.
 
-On the right (or below, depending on your layout preference) the
-auto-mounted **Map tab** shows pins for every received frame, layered
-by ship. Multi-select frames in the streaming list (Ctrl/Shift-click)
-and the map flies to fit the selection.
+On the right (or below, depending on your layout preference):
+
+- **With `Kuestenlogik.Bowire.Extension.MapLibre` installed** — an
+  auto-mounted **Map tab** shows pins for every received frame, layered
+  by ship. Multi-select frames in the streaming list (Ctrl/Shift-click)
+  and the map flies to fit the selection. Without a configured
+  `Bowire:MapTileUrl` the map renders blank-background + pins —
+  zero outbound HTTP, the offline-mode guarantee survives.
+- **Without the extension** — a placeholder card tells you the
+  framework detected `coordinate.latitude` / `coordinate.longitude`
+  on the response but no viewer is registered, plus a copy-to-clipboard
+  one-liner for the missing package id. The JSON view still flows.
 
 ## Why no Bowire references in the csproj
 

@@ -48,3 +48,39 @@ app.MapBowire();                       // <-- mounts /bowire
 
 That's it. Reflection, discovery, and the request form are handled by
 `Kuestenlogik.Bowire.Protocol.Grpc`.
+
+## Verify gRPC-Web actually works (not just configured)
+
+`UseGrpcWeb(DefaultEnabled = true)` in `Program.cs` *enables* the
+HTTP/1.1 transport, but the only way to be sure it's wired up is to
+talk to it. From a second terminal, with the sample running on
+`https://localhost:5110`, point the standalone `bowire` CLI at the
+gRPC-Web endpoint using the `grpcweb@` URL-hint prefix:
+
+```bash
+# Native HTTP/2 transport (default — no hint required)
+bowire --url grpc@https://localhost:5110
+
+# gRPC-Web over HTTP/1.1 transport (same server, same service)
+bowire --url grpcweb@https://localhost:5110
+```
+
+Both invocations should produce identical discovery output:
+
+```
+1 services discovered:
+  harbor.HarborService (6 methods)
+```
+
+The six methods are every RPC declared in `harbor.proto`:
+`SchedulePortCall`, `GetPortCall`, `ListPortCalls`, `WatchCrane`,
+`UploadManifest`, `HarborRadio`. (The reflection service itself is
+filtered out of the discovery listing.) An **identical method count
+across both transports** is the proof — if gRPC-Web were
+misconfigured the HTTP/1.1 path would either 415 the reflection
+probe or return zero methods.
+
+Browser callers (which need CORS preflight) would additionally require
+`app.UseCors(...)` **before** `app.UseGrpcWeb(...)`. Bowire's own
+workbench talks server-to-server, so CORS is intentionally off in this
+sample.

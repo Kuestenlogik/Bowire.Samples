@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.80.0" />
+    <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.80.0" />
+    <!-- gRPC-Web so a Bowire client running standalone-mode in a
+         pure HTTP/1.1 environment (browser-fronted, locked-down
+         ingress, …) can consume the same WatchShips stream via the
+         grpcweb@host hint instead of the native grpc@host hint. -->
+    <PackageReference Include="Grpc.AspNetCore.Web" Version="2.80.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Protobuf Include="Protos\ships.proto" GrpcServices="Server" />
+  </ItemGroup>
+</Project>

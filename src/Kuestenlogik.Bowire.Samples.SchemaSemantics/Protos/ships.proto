@@ -1,0 +1,45 @@
+// Copyright 2026 Küstenlogik
+// SPDX-License-Identifier: Apache-2.0
+
+syntax = "proto3";
+
+package schemasemantics;
+
+// Explicit C# namespace so generated types land at `SchemaSemantics`
+// (not the default `Schemasemantics` derived from the proto package).
+option csharp_namespace = "SchemaSemantics";
+
+// Deliberately tiny schema: four scalar fields, two of which happen
+// to be conventionally-named geographic coordinates. No annotations,
+// no extensions, no Bowire-specific hooks — the proof that Bowire's
+// frame-semantics framework can mount the map widget purely from
+// payload shape lives or dies on whether THIS file is enough.
+
+service Ships {
+  // Server-streaming RPC that emits one ShipUpdate per second.
+  rpc WatchShips (WatchShipsRequest) returns (stream ShipUpdate);
+}
+
+message WatchShipsRequest {
+  // No knobs — every client sees the same loop.
+}
+
+message ShipUpdate {
+  // Ship identifier as displayed in pin labels (e.g. "Aurora",
+  // "Helgoland-Express"). Free-form string by design — clients
+  // don't need to enumerate them up-front.
+  string ship = 1;
+
+  // WGS84 latitude. Conventionally-named so the built-in detector
+  // matches by regex `^lat(itude)?$` plus the [-90, 90] range check.
+  double lat = 2;
+
+  // WGS84 longitude. Conventionally-named (`lng`, `long`, or
+  // `longitude` all match the upstream regex; `lon` alone is a
+  // known v1 gap that resolves with one right-click).
+  double lng = 3;
+
+  // Free-form status string. "underway", "moored", "anchored", …
+  // Renders in the streaming-frames pane and the map-pin label.
+  string status = 4;
+}

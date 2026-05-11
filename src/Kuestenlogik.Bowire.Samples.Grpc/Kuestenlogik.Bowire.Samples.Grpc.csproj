@@ -4,6 +4,12 @@
     <PackageReference Include="Kuestenlogik.Bowire.Protocol.Grpc" Version="1.1.*" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.80.0" />
     <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.80.0" />
+    <!-- gRPC-Web middleware: the same HarborService is reachable over
+         both native HTTP/2 (bowire grpc@host:5110) and gRPC-Web over
+         HTTP/1.1 (bowire grpcweb@host:5110). Demos the dual-transport
+         pattern Rheinmetall TacticalAPI uses. Requires Bowire 1.2.0+
+         on the client side to consume the web path. -->
+    <PackageReference Include="Grpc.AspNetCore.Web" Version="2.80.0" />
     <ProjectReference Include="..\Kuestenlogik.Bowire.Samples.Shared\Kuestenlogik.Bowire.Samples.Shared.csproj" />
   </ItemGroup>
   <ItemGroup>

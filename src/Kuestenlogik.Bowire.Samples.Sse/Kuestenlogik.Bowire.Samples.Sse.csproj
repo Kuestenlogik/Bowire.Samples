@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <ItemGroup>
-    <PackageReference Include="Kuestenlogik.Bowire" Version="1.0.10" />
-    <PackageReference Include="Kuestenlogik.Bowire.Protocol.Sse" Version="1.0.10" />
+    <PackageReference Include="Kuestenlogik.Bowire" Version="1.1.0" />
+    <PackageReference Include="Kuestenlogik.Bowire.Protocol.Sse" Version="1.1.0" />
     <ProjectReference Include="..\Kuestenlogik.Bowire.Samples.Shared\Kuestenlogik.Bowire.Samples.Shared.csproj" />
   </ItemGroup>
 </Project>

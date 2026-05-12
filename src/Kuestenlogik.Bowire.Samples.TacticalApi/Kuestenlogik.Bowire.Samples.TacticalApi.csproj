@@ -1,0 +1,79 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <Description>Sample TacticalAPI server hosting a small seeded `Situation` graph — three MIL-2525C symbols around the German North Sea coast — so the Bowire workbench can demo typed discovery + invoke against Rheinmetall's TacticalAPI without needing a real C4I backend. Server-side counterpart to Kuestenlogik.Bowire.Protocol.TacticalApi.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Kuestenlogik.Bowire" Version="1.3.*" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.80.0" />
+    <!-- gRPC-Web middleware so the same Situation service is reachable
+         over both native HTTP/2 (bowire tacticalapi@host:5120) and
+         gRPC-Web over HTTP/1.1, mirroring Rheinmetall TacNet's
+         dual-port (4267 / 4268) pattern documented upstream. -->
+    <PackageReference Include="Grpc.AspNetCore.Web" Version="2.80.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.80.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <!--
+    ============================================================================
+    Build-time TacticalAPI proto fetch (server-side bindings)
+    ============================================================================
+    Mirrors the plugin's download target so this sample compiles against the
+    exact same .proto revision the plugin bundles for clients. The upstream
+    files at github.com/Rheinmetall/tacticalapi are EPL-2.0 OR BSD-3-Clause —
+    vendoring them into this Apache-2.0 repo would be a license-different
+    redistribution, so we fetch them into obj/ at build time and only the
+    generated C# server bindings end up in the assembly.
+
+    Pinned commit: e68546809d981cd649325dba4a9702c1a77a1a0b — must match the
+    plugin's TacticalApiProtoSha so client and server agree on wire format.
+  -->
+  <PropertyGroup>
+    <TacticalApiProtoSha>e68546809d981cd649325dba4a9702c1a77a1a0b</TacticalApiProtoSha>
+    <TacticalApiProtoBaseUrl>https://raw.githubusercontent.com/Rheinmetall/tacticalapi/$(TacticalApiProtoSha)/rheinmetall/tactical_api/v0</TacticalApiProtoBaseUrl>
+    <TacticalApiProtoRoot>$(IntermediateOutputPath)tacticalapi-protos\</TacticalApiProtoRoot>
+    <TacticalApiProtoDir>$(TacticalApiProtoRoot)rheinmetall\tactical_api\v0\</TacticalApiProtoDir>
+  </PropertyGroup>
+
+  <Target Name="DownloadTacticalApiProtos"
+          BeforeTargets="PrepareForBuild;Protobuf_Compile"
+          Inputs="$(MSBuildThisFileFullPath)"
+          Outputs="$(TacticalApiProtoDir).fetch-stamp">
+    <MakeDir Directories="$(TacticalApiProtoDir)" />
+
+    <ItemGroup>
+      <_TacticalApiProtoFile Include="service_types.proto" />
+      <_TacticalApiProtoFile Include="situation_object_locations.proto" />
+      <_TacticalApiProtoFile Include="situation_object_types.proto" />
+      <_TacticalApiProtoFile Include="situation_object_updates.proto" />
+      <_TacticalApiProtoFile Include="situation_service.proto" />
+      <_TacticalApiProtoFile Include="types.proto" />
+    </ItemGroup>
+
+    <Message Importance="high"
+             Text="Fetching TacticalAPI .proto files from $(TacticalApiProtoBaseUrl)" />
+
+    <DownloadFile SourceUrl="$(TacticalApiProtoBaseUrl)/%(_TacticalApiProtoFile.Identity)"
+                  DestinationFolder="$(TacticalApiProtoDir)"
+                  SkipUnchangedFiles="true" />
+
+    <Touch Files="$(TacticalApiProtoDir).fetch-stamp" AlwaysCreate="true" />
+  </Target>
+
+  <Target Name="AddTacticalApiProtobufItems"
+          AfterTargets="DownloadTacticalApiProtos"
+          BeforeTargets="Protobuf_Compile">
+    <ItemGroup>
+      <Protobuf Include="$(TacticalApiProtoDir)*.proto"
+                ProtoRoot="$(TacticalApiProtoRoot)"
+                GrpcServices="Server"
+                Access="Public"
+                CompileOutputs="true" />
+    </ItemGroup>
+  </Target>
+
+</Project>

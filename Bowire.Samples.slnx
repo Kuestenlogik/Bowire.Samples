@@ -13,5 +13,6 @@
     <Project Path="src/Kuestenlogik.Bowire.Samples.SocketIo/Kuestenlogik.Bowire.Samples.SocketIo.csproj" />
     <Project Path="src/Kuestenlogik.Bowire.Samples.Mcp/Kuestenlogik.Bowire.Samples.Mcp.csproj" />
     <Project Path="src/Kuestenlogik.Bowire.Samples.SchemaSemantics/Kuestenlogik.Bowire.Samples.SchemaSemantics.csproj" />
+    <Project Path="src/Kuestenlogik.Bowire.Samples.TacticalApi/Kuestenlogik.Bowire.Samples.TacticalApi.csproj" />
   </Folder>
 </Solution>

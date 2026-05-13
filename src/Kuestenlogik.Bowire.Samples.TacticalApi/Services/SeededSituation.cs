@@ -21,24 +21,30 @@ internal static class SeededSituation
         var now = Timestamp.FromDateTime(DateTime.UtcNow);
         var reporter = new Identity { StringIdentity = "TacticalAPI.Sample" };
 
+        // Three seeded contacts in the Wismarer Bucht — a maritime scene
+        // that puts the Küstenlogik tooling literally on the coast it's
+        // named after. Coordinates picked so the auto-fitBounds zoom
+        // shows BOTH land (Insel Poel + Wismar harbour) and water in
+        // the same frame, giving the WGS84 detector + map widget a
+        // visually meaningful canvas to demonstrate.
         var result = new Dictionary<string, SituationObject>(StringComparer.Ordinal);
         Add(result, BuildSymbol(
             uuid: "ce4a51f0-3e30-4f6c-b32c-2b48d4a35b1a",
-            symbolCode: "SFGPUCI-----***", // Friend ground unit, infantry
-            name: "1st Infantry Section",
-            latitude: 53.8635, longitude: 8.7066,           // Cuxhaven
+            symbolCode: "SFSP------*****", // Sea / Friend / Present surface vessel
+            name: "Patrol Boat Möwe",
+            latitude: 53.8950, longitude: 11.4720,          // Wismar harbour entrance
             reporter: reporter, now: now));
         Add(result, BuildSymbol(
             uuid: "f5b3e2a6-9d27-4d4f-93c9-1e7b9f4d0c52",
-            symbolCode: "SHGPEWA-----***", // Hostile equipment, armored
-            name: "Hostile Armored Recon",
-            latitude: 53.5396, longitude: 8.5809,           // Bremerhaven
+            symbolCode: "SHSP------*****", // Sea / Hostile / Present surface contact
+            name: "Unidentified Surface Contact",
+            latitude: 54.0200, longitude: 11.4150,          // Open water north of Insel Poel
             reporter: reporter, now: now));
         Add(result, BuildSymbol(
             uuid: "9d1f2e0b-c2d4-4a31-89e0-1aef8a8e6021",
-            symbolCode: "SNGPUCRRO---***", // Neutral ground unit, recon, observation
-            name: "Coastal Observation Post",
-            latitude: 53.5189, longitude: 8.1078,           // Wilhelmshaven
+            symbolCode: "SNSP------*****", // Sea / Neutral / Present surface vessel
+            name: "Cargo Vessel Hanse",
+            latitude: 53.9500, longitude: 11.5300,          // Wismar Bay, mid-channel
             reporter: reporter, now: now));
         return result;
     }

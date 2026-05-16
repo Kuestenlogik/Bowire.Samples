@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!-- ============================================================
+       INTENTIONALLY VULNERABLE sample.
+
+       This project is the canonical "vulnerable-by-design" target
+       the `bowire scan` subcommand probes against. Every misconfig
+       here corresponds to a finding the scanner is supposed to
+       report — DO NOT copy this Program.cs into a real service.
+
+       See README.md next to this csproj for the full vulnerability
+       inventory + the `bowire scan` invocation that exercises them.
+       ============================================================ -->
+
+  <ItemGroup>
+    <!-- HotChocolate version matches Kuestenlogik.Bowire.Samples.GraphQL
+         to avoid drift across the samples solution. -->
+    <PackageReference Include="HotChocolate.AspNetCore" Version="16.0.0" />
+
+    <!-- gRPC + Server Reflection versions match
+         Kuestenlogik.Bowire.Samples.Grpc to keep the samples
+         solution coherent. -->
+    <PackageReference Include="Grpc.AspNetCore" Version="2.80.0" />
+    <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.80.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Protos\probe.proto" GrpcServices="Server" />
+  </ItemGroup>
+
+</Project>

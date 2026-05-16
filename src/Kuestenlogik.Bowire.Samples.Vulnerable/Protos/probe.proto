@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+// Minimal proto used only so the sample exposes ONE gRPC service.
+// The point of this sample is the Server-Reflection finding — the
+// service contents are deliberately uninteresting.
+
+option csharp_namespace = "Kuestenlogik.Bowire.Samples.Vulnerable.Protos";
+
+package vulnerable_sample;
+
+message PingRequest  { string note = 1; }
+message PingReply    { string echo = 1; }
+
+service ProbeService {
+  rpc Ping (PingRequest) returns (PingReply);
+}

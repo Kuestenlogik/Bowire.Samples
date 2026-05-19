@@ -55,12 +55,20 @@ operations:
     channel:
       $ref: '#/channels/craneStatus'
     summary: Subscribe to crane telemetry from every crane on the harbour.
+    bindings:
+      mqtt:
+        qos: 1
+        retain: false
 
   receivePublisherStatus:
     action: receive
     channel:
       $ref: '#/channels/publisherStatus'
     summary: Subscribe to the publisher liveness channel.
+    bindings:
+      mqtt:
+        qos: 1
+        retain: true
 
 components:
   messages:

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <ProjectReference Include="..\Kuestenlogik.Bowire.Samples.Shared\Kuestenlogik.Bowire.Samples.Shared.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- The AsyncAPI document is served as a static file; copy it next
+         to the app's content root so the publish output picks it up. -->
+    <Content Include="harbor-events.asyncapi.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,79 @@
+asyncapi: 3.0.0
+info:
+  title: Harbor Control Center — Event Stream
+  version: 1.0.0
+  description: |
+    AsyncAPI 3.0 schema for the harbor control centre's event channels.
+    Mirrors the topics published by `Kuestenlogik.Bowire.Samples.Mqtt`
+    (the embedded MQTT broker on port 1883) so this sample doesn't run
+    its own broker — point Bowire at this document plus the Mqtt
+    sample's broker URL and the workbench will route operations through
+    the existing MQTT plugin.
+
+    Topics (mirror the Mqtt sample's publisher):
+      harbor/crane/{craneId}/status          one frame per crane, every second
+      harbor/status/publisher                Last Will and Testament
+
+servers:
+  productionBroker:
+    host: 'localhost:1883'
+    protocol: mqtt
+    description: |
+      Local MQTT broker spun up by `Kuestenlogik.Bowire.Samples.Mqtt`.
+      Swap for `mqtt.example.com:8883` (TLS) or `8083` (MQTT-over-WS)
+      in a real deployment.
+
+channels:
+  craneStatus:
+    address: 'harbor/crane/{craneId}/status'
+    title: Crane status telemetry
+    summary: One JSON status frame per crane, published every second.
+    description: |
+      Subscribing clients (dashboards, automation rules, the
+      Bowire workbench) receive a stream of status updates with crane
+      id, current operational status, boom angle, and load tonnage.
+      Frames are retained — fresh subscribers see the latest state
+      immediately without waiting for the next tick.
+    parameters:
+      craneId:
+        description: Identifier of the crane (e.g. `crane-01`).
+    messages:
+      craneStatusUpdate:
+        $ref: '#/components/messages/craneStatusUpdate'
+
+  publisherStatus:
+    address: 'harbor/status/publisher'
+    title: Publisher liveness
+    summary: Last Will and Testament — broker announces a publisher drop.
+    messages:
+      publisherWill:
+        $ref: '#/components/messages/publisherWill'
+
+operations:
+  receiveCraneStatus:
+    action: receive
+    channel:
+      $ref: '#/channels/craneStatus'
+    summary: Subscribe to crane telemetry from every crane on the harbour.
+
+  receivePublisherStatus:
+    action: receive
+    channel:
+      $ref: '#/channels/publisherStatus'
+    summary: Subscribe to the publisher liveness channel.
+
+components:
+  messages:
+    craneStatusUpdate:
+      name: craneStatusUpdate
+      title: Crane status update
+      summary: A single crane's current operational state + load.
+      contentType: application/json
+
+    publisherWill:
+      name: publisherWill
+      title: Publisher will
+      summary: |
+        Broker-emitted notification published with `retain` when the
+        publisher's TCP connection drops uncleanly.
+      contentType: application/json

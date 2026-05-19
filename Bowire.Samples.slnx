@@ -10,6 +10,7 @@
     <Project Path="src/Kuestenlogik.Bowire.Samples.GraphQL/Kuestenlogik.Bowire.Samples.GraphQL.csproj" />
     <Project Path="src/Kuestenlogik.Bowire.Samples.OData/Kuestenlogik.Bowire.Samples.OData.csproj" />
     <Project Path="src/Kuestenlogik.Bowire.Samples.Mqtt/Kuestenlogik.Bowire.Samples.Mqtt.csproj" />
+    <Project Path="src/Kuestenlogik.Bowire.Samples.AsyncApi/Kuestenlogik.Bowire.Samples.AsyncApi.csproj" />
     <Project Path="src/Kuestenlogik.Bowire.Samples.SocketIo/Kuestenlogik.Bowire.Samples.SocketIo.csproj" />
     <Project Path="src/Kuestenlogik.Bowire.Samples.Mcp/Kuestenlogik.Bowire.Samples.Mcp.csproj" />
     <Project Path="src/Kuestenlogik.Bowire.Samples.SchemaSemantics/Kuestenlogik.Bowire.Samples.SchemaSemantics.csproj" />

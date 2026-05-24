@@ -4,7 +4,17 @@
          so this sample uses a Docker-supplied RabbitMQ (see compose.yaml
          next to the project) — there is no in-process AMQP 0.9.1 broker
          for .NET, unlike the embedded MQTTnet broker the MQTT sample
-         uses. -->
+         uses.
+
+         NOTE: Bowire-host integration (AddBowire / MapBowire) is held
+         back until Kuestenlogik.Bowire.Protocol.Amqp ships on NuGet.
+         The plugin's v0.2.0 tag is pushed but the sibling repo has no
+         release.yml yet, so the package isn't on NuGet.org and the
+         sample can't pull it. Once the plugin auto-publishes, this
+         csproj adds Kuestenlogik.Bowire + Kuestenlogik.Bowire.Protocol.Amqp,
+         Program.cs adds AddBowire/MapBowire + the discovery seed, and
+         the protocol-card mockup gets replaced by a real workbench
+         screenshot. -->
     <PackageReference Include="RabbitMQ.Client" Version="7.0.0" />
     <ProjectReference Include="..\Kuestenlogik.Bowire.Samples.Shared\Kuestenlogik.Bowire.Samples.Shared.csproj" />
   </ItemGroup>

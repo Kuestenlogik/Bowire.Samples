@@ -8,13 +8,15 @@ using RabbitMQ.Client;
 
 // Isolated AMQP 0.9.1 sample. Expects a RabbitMQ broker on
 // amqp://localhost:5672 (see compose.yaml next to the project). The
-// host runs the Bowire workbench on /bowire and a publisher that
-// emits crane telemetry to the `harbor` topic exchange every second.
-// Discovery happens externally — connect a standalone Bowire instance
-// at:
+// host runs a publisher that emits crane telemetry to the `harbor`
+// topic exchange every second. Discovery is external — connect a
+// standalone Bowire instance at:
 //   bowire --url amqp://localhost:5672
-// or open the embedded workbench at https://localhost:5118/bowire and
-// add an amqp:// URL there.
+//
+// NOTE: Bowire-host integration (AddBowire / MapBowire) is held back
+// until Kuestenlogik.Bowire.Protocol.Amqp ships on NuGet — see the
+// note on the csproj. The MQTT sample uses the same external-CLI
+// pattern, so the shape stays consistent.
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton(HarborStore.CreateSeeded());

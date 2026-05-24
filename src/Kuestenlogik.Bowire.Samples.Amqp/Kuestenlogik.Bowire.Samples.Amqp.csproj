@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <!-- RabbitMQ AMQP 0.9.1 client. The broker itself is Erlang-only,
+         so this sample uses a Docker-supplied RabbitMQ (see compose.yaml
+         next to the project) — there is no in-process AMQP 0.9.1 broker
+         for .NET, unlike the embedded MQTTnet broker the MQTT sample
+         uses. -->
+    <PackageReference Include="RabbitMQ.Client" Version="7.0.0" />
+    <ProjectReference Include="..\Kuestenlogik.Bowire.Samples.Shared\Kuestenlogik.Bowire.Samples.Shared.csproj" />
+  </ItemGroup>
+</Project>

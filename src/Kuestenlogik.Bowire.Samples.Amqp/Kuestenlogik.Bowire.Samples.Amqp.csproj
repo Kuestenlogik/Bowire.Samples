@@ -4,7 +4,7 @@
          scan the load context for IBowireProtocol implementations, so
          the plugin package is all we need for the workbench to surface
          AMQP in its sidebar — no manual registration. -->
-    <PackageReference Include="Kuestenlogik.Bowire" Version="1.5.0" />
+    <PackageReference Include="Kuestenlogik.Bowire" Version="1.5.1" />
     <PackageReference Include="Kuestenlogik.Bowire.Protocol.Amqp" Version="0.2.1" />
 
     <!-- RabbitMQ AMQP 0.9.1 client for the publisher loop. The broker

@@ -1,0 +1,24 @@
+# RabbitMQ broker for the AMQP sample.
+#
+# Unlike MQTTnet, .NET has no in-process AMQP 0.9.1 broker, so this
+# sample relies on the official RabbitMQ image. The :management tag
+# bundles the HTTP Management API on :15672 — Bowire's AMQP plugin
+# uses that API for topology discovery (queues, exchanges, bindings),
+# so leaving it on makes the workbench's sidebar populate without
+# extra wiring.
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: bowire-samples-rabbitmq
+    ports:
+      - "5672:5672"   # AMQP 0.9.1
+      - "15672:15672" # HTTP management API (Bowire reads topology from here)
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10

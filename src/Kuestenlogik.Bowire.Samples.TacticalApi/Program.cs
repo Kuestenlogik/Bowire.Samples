@@ -18,6 +18,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddGrpc();
 builder.Services.AddBowire();
+// Singleton so the in-memory Situation store + background mover live
+// across requests. gRPC-service-as-singleton requires explicit DI
+// registration (otherwise MapGrpcService falls back to scoped which
+// would spin up a new store + mover per call). The implementation
+// holds shared state by design.
+builder.Services.AddSingleton<SituationServiceImpl>();
 
 // No gRPC reflection: the TacticalAPI plugin's whole point is bundled-
 // descriptor discovery, so the sample wants the workbench to enter the

@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Kuestenlogik.Bowire" Version="1.5.1" />
+    <PackageReference Include="Kuestenlogik.Bowire" Version="1.6.0" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.80.0" />
     <!-- gRPC-Web middleware so the same Situation service is reachable
          over both native HTTP/2 (bowire tacticalapi@host:5120) and

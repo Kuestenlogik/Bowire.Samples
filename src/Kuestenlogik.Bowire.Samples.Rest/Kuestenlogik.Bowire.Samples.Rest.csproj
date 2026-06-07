@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <ItemGroup>
     <PackageReference Include="Kuestenlogik.Bowire" Version="1.8.0" />
-    <PackageReference Include="Kuestenlogik.Bowire.Protocol.Rest" Version="1.6.0" />
+    <PackageReference Include="Kuestenlogik.Bowire.Protocol.Rest" Version="1.8.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8" />
     <ProjectReference Include="..\Kuestenlogik.Bowire.Samples.Shared\Kuestenlogik.Bowire.Samples.Shared.csproj" />
   </ItemGroup>

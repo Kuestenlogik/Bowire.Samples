@@ -5,7 +5,7 @@
          the plugin package is all we need for the workbench to surface
          AMQP in its sidebar — no manual registration. -->
     <PackageReference Include="Kuestenlogik.Bowire" Version="1.8.0" />
-    <PackageReference Include="Kuestenlogik.Bowire.Protocol.Amqp" Version="0.2.1" />
+    <PackageReference Include="Kuestenlogik.Bowire.Protocol.Amqp" Version="1.0.0" />
 
     <!-- RabbitMQ AMQP 0.9.1 client for the publisher loop. The broker
          itself is Erlang-only, so this sample uses a Docker-supplied

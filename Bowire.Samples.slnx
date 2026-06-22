@@ -1,21 +1,34 @@
 <Solution>
-  <Folder Name="/src/">
-    <Project Path="src/Kuestenlogik.Bowire.Samples.Shared/Kuestenlogik.Bowire.Samples.Shared.csproj" />
-    <Project Path="src/Kuestenlogik.Bowire.Samples.Combined/Kuestenlogik.Bowire.Samples.Combined.csproj" />
-    <Project Path="src/Kuestenlogik.Bowire.Samples.Grpc/Kuestenlogik.Bowire.Samples.Grpc.csproj" />
-    <Project Path="src/Kuestenlogik.Bowire.Samples.Rest/Kuestenlogik.Bowire.Samples.Rest.csproj" />
-    <Project Path="src/Kuestenlogik.Bowire.Samples.SignalR/Kuestenlogik.Bowire.Samples.SignalR.csproj" />
-    <Project Path="src/Kuestenlogik.Bowire.Samples.WebSocket/Kuestenlogik.Bowire.Samples.WebSocket.csproj" />
-    <Project Path="src/Kuestenlogik.Bowire.Samples.Sse/Kuestenlogik.Bowire.Samples.Sse.csproj" />
-    <Project Path="src/Kuestenlogik.Bowire.Samples.GraphQL/Kuestenlogik.Bowire.Samples.GraphQL.csproj" />
-    <Project Path="src/Kuestenlogik.Bowire.Samples.OData/Kuestenlogik.Bowire.Samples.OData.csproj" />
-    <Project Path="src/Kuestenlogik.Bowire.Samples.Mqtt/Kuestenlogik.Bowire.Samples.Mqtt.csproj" />
-    <Project Path="src/Kuestenlogik.Bowire.Samples.Amqp/Kuestenlogik.Bowire.Samples.Amqp.csproj" />
-    <Project Path="src/Kuestenlogik.Bowire.Samples.AsyncApi/Kuestenlogik.Bowire.Samples.AsyncApi.csproj" />
-    <Project Path="src/Kuestenlogik.Bowire.Samples.SocketIo/Kuestenlogik.Bowire.Samples.SocketIo.csproj" />
-    <Project Path="src/Kuestenlogik.Bowire.Samples.Mcp/Kuestenlogik.Bowire.Samples.Mcp.csproj" />
-    <Project Path="src/Kuestenlogik.Bowire.Samples.SchemaSemantics/Kuestenlogik.Bowire.Samples.SchemaSemantics.csproj" />
-    <Project Path="src/Kuestenlogik.Bowire.Samples.TacticalApi/Kuestenlogik.Bowire.Samples.TacticalApi.csproj" />
-    <Project Path="src/Kuestenlogik.Bowire.Samples.Vulnerable/Kuestenlogik.Bowire.Samples.Vulnerable.csproj" />
+  <Folder Name="/harbor-demo/">
+    <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.Shared/Kuestenlogik.Bowire.Samples.Shared.csproj" />
+    <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.Combined/Kuestenlogik.Bowire.Samples.Combined.csproj" />
+    <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.Grpc/Kuestenlogik.Bowire.Samples.Grpc.csproj" />
+    <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.Rest/Kuestenlogik.Bowire.Samples.Rest.csproj" />
+    <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.SignalR/Kuestenlogik.Bowire.Samples.SignalR.csproj" />
+    <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.WebSocket/Kuestenlogik.Bowire.Samples.WebSocket.csproj" />
+    <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.Sse/Kuestenlogik.Bowire.Samples.Sse.csproj" />
+    <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.GraphQL/Kuestenlogik.Bowire.Samples.GraphQL.csproj" />
+    <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.OData/Kuestenlogik.Bowire.Samples.OData.csproj" />
+    <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.Mqtt/Kuestenlogik.Bowire.Samples.Mqtt.csproj" />
+    <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.Amqp/Kuestenlogik.Bowire.Samples.Amqp.csproj" />
+    <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.AsyncApi/Kuestenlogik.Bowire.Samples.AsyncApi.csproj" />
+    <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.SocketIo/Kuestenlogik.Bowire.Samples.SocketIo.csproj" />
+    <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.Mcp/Kuestenlogik.Bowire.Samples.Mcp.csproj" />
+    <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.SchemaSemantics/Kuestenlogik.Bowire.Samples.SchemaSemantics.csproj" />
+    <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.TacticalApi/Kuestenlogik.Bowire.Samples.TacticalApi.csproj" />
+    <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.Vulnerable/Kuestenlogik.Bowire.Samples.Vulnerable.csproj" />
+  </Folder>
+  <Folder Name="/protocols/">
+    <Project Path="protocols/GraphQL.Books/Books.csproj" />
+    <Project Path="protocols/Grpc.Greeter/Greeter.csproj" />
+    <Project Path="protocols/JsonRpc.Math/Math.csproj" />
+    <Project Path="protocols/Mcp.Tools/Tools.csproj" />
+    <Project Path="protocols/OData.Northwind/Northwind.csproj" />
+    <Project Path="protocols/Pulsar.Producer/Producer.csproj" />
+    <Project Path="protocols/Rest.PetStore/PetStore.csproj" />
+    <Project Path="protocols/SignalR.Chat/Chat.csproj" />
+    <Project Path="protocols/Soap.CalculatorService/CalculatorService.csproj" />
+    <Project Path="protocols/Sse.Ticker/Ticker.csproj" />
+    <Project Path="protocols/WebSocket.Echo/Echo.csproj" />
   </Folder>
 </Solution>

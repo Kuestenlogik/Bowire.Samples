@@ -99,6 +99,7 @@ The [`protocols/`](protocols/) folder holds the per-plugin canonical demos — e
 | [`Nats`](protocols/Nats) | `Bowire.Protocol.Nats` | `docker compose up` | `nats://localhost:4222` |
 | [`Mqtt`](protocols/Mqtt) | `Bowire.Protocol.Mqtt` | `docker compose up` | `tcp://localhost:1883` |
 | [`Mcp.Tools`](protocols/Mcp.Tools) | `Bowire.Protocol.Mcp` | `dotnet run` | `http://localhost:5190/mcp` |
+| [`TacticalApi.RadarSweep`](protocols/TacticalApi.RadarSweep) | `Bowire.Protocol.TacticalApi` | `dotnet run` | `http://localhost:5191` |
 
 Ports stay in the 5180–5199 band so a protocol-demo and the Harbor multi-sample (5101–5120) don't collide when both run.
 

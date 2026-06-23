@@ -29,6 +29,7 @@
     <Project Path="protocols/SignalR.Chat/Chat.csproj" />
     <Project Path="protocols/Soap.CalculatorService/CalculatorService.csproj" />
     <Project Path="protocols/Sse.Ticker/Ticker.csproj" />
+    <Project Path="protocols/TacticalApi.RadarSweep/RadarSweep.csproj" />
     <Project Path="protocols/WebSocket.Echo/Echo.csproj" />
   </Folder>
 </Solution>

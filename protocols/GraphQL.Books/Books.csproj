@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="HotChocolate.AspNetCore" Version="15.1.10" />
-    <PackageReference Include="HotChocolate.Subscriptions.InMemory" Version="15.1.10" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="16.3.0" />
+    <PackageReference Include="HotChocolate.Subscriptions.InMemory" Version="16.3.0" />
   </ItemGroup>
 </Project>

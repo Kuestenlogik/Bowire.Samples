@@ -292,6 +292,19 @@ app.MapGet("/oops", () =>
     throw new InvalidOperationException("simulated production crash");
 });
 
+// ----------------------------------------------------------------------------
+// [Finding #16] BWR-REST-002 — HTTP TRACE method enabled (Cross-Site Tracing).
+//
+// Kestrel returns 405 for TRACE by default; we deliberately map a handler that
+// answers 200 with a message/http body echoing the request line — the classic
+// XST surface a proxy/WAF can be tricked into reflecting cookies/auth headers
+// through. The trace-method-allowed.json template asserts the 200 + the
+// echoed request line.
+// ----------------------------------------------------------------------------
+app.MapMethods("/", new[] { "TRACE" }, () => Results.Content(
+    "TRACE / HTTP/1.1\r\nX-Bowire-Trace-Marker: reflected\r\n",
+    "message/http"));
+
 app.Run();
 
 // ----------------------------------------------------------------------------
@@ -320,6 +333,13 @@ public sealed class TrivialQuery
 {
     public string Hello => "world";
 }
+
+// Note: BWR-GRAPHQL-003 (field-suggestion-leak) intentionally does NOT fire
+// against this sample. HotChocolate 15 does not emit "Did you mean 'x'?"
+// hints in its field-does-not-exist errors, so it is not vulnerable to that
+// specific schema-disclosure vector — the correct negative-case result. The
+// template still ships for the many GraphQL servers (Apollo / graphql-js)
+// that DO leak field suggestions by default.
 
 // ----------------------------------------------------------------------------
 // Trivial SignalR hub — [Finding #7]. Mapped without authorization, so its

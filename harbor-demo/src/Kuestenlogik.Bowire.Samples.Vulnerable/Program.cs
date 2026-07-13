@@ -74,6 +74,17 @@ builder.Services
 builder.Services.AddGrpc();
 builder.Services.AddGrpcReflection();
 
+// ----------------------------------------------------------------------------
+// [Finding #7] BWR-SIGNALR-001 — SignalR hub reachable by anonymous callers.
+//
+// A hub mapped with no `.RequireAuthorization()` accepts the negotiate
+// handshake from any unauthenticated client, handing out a
+// connectionToken + the availableTransports list. The
+// signalr-anonymous-negotiate.json template POSTs to the hub's
+// /negotiate endpoint and asserts those details come back.
+// ----------------------------------------------------------------------------
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 // ----------------------------------------------------------------------------
@@ -118,6 +129,54 @@ app.MapGraphQL("/graphql");
 app.MapGrpcService<ProbeGrpcService>();
 app.MapGrpcReflectionService();
 
+// Map the SignalR hub with NO authorization policy — [Finding #7]. The
+// negotiate endpoint at /hubs/probe/negotiate answers anonymous POSTs.
+app.MapHub<ProbeHub>("/hubs/probe");
+
+// ----------------------------------------------------------------------------
+// [Finding #8] BWR-ODATA-001 — OData $metadata (CSDL) reachable without auth.
+//
+// The CSDL document describes every entity type + property — a complete
+// schema-disclosure vector, the OData analogue of GraphQL introspection.
+// Hand-rolled (no OData middleware needed): the odata-metadata-exposed.json
+// template GETs /$metadata and asserts the edmx envelope comes back.
+// ----------------------------------------------------------------------------
+app.MapGet("/$metadata", () => Results.Content(
+    """
+    <?xml version="1.0" encoding="utf-8"?>
+    <edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+      <edmx:DataServices>
+        <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Harbor">
+          <EntityType Name="Order">
+            <Key><PropertyRef Name="Id"/></Key>
+            <Property Name="Id" Type="Edm.Int32" Nullable="false"/>
+            <Property Name="Owner" Type="Edm.String"/>
+            <Property Name="Total" Type="Edm.Decimal"/>
+          </EntityType>
+          <EntityContainer Name="Container">
+            <EntitySet Name="Orders" EntityType="Harbor.Order"/>
+          </EntityContainer>
+        </Schema>
+      </edmx:DataServices>
+    </edmx:Edmx>
+    """,
+    "application/xml"));
+
+// ----------------------------------------------------------------------------
+// [Finding #9] BWR-ODATA-002 — OData entity readable with no object-level
+// authorization (BOLA / IDOR).
+//
+// /odata/Orders(N) returns the order for ANY id to an unauthenticated
+// caller — no ownership check. Id 1 belongs to "admin", so an anonymous
+// read of someone else's object is the broken-object-level-authorization
+// indicator the odata-entity-object-idor.json template detects.
+// ----------------------------------------------------------------------------
+app.MapGet("/odata/Orders({id:int})", (int id) => Results.Content(
+    $$"""
+    {"@odata.context":"https://localhost:5140/$metadata#Orders/$entity","Id":{{id}},"Owner":"admin","Total":4211.50}
+    """,
+    "application/json"));
+
 // Plain GET / so the scanner has something to probe for the security-
 // headers + banner checks. Returning a tiny string keeps the response
 // boring on purpose.
@@ -160,4 +219,14 @@ internal sealed class AlwaysAllowIntrospectionInterceptor : DefaultHttpRequestIn
 public sealed class TrivialQuery
 {
     public string Hello => "world";
+}
+
+// ----------------------------------------------------------------------------
+// Trivial SignalR hub — [Finding #7]. Mapped without authorization, so its
+// auto-generated /hubs/probe/negotiate endpoint answers anonymous POSTs with
+// a connectionToken + availableTransports. No methods needed: the negotiate
+// handshake alone is the misconfiguration signal.
+// ----------------------------------------------------------------------------
+internal sealed class ProbeHub : Microsoft.AspNetCore.SignalR.Hub
+{
 }

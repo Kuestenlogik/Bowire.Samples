@@ -17,6 +17,9 @@ Hosts an ASP.NET Core 10 web app on `https://localhost:5140` that is misconfigur
 | 5 | Always-on developer exception page + `/oops` thrower | `BWR-BUILTIN-ERROR-001` | `UseDeveloperExceptionPage()` + `MapGet("/oops", () => throw …)` |
 | 6a | Kestrel accepts TLS 1.0 | `BWR-BUILTIN-TLS-TLS10` | `ConfigureKestrel(... SslProtocols = Tls\|Tls11\|Tls12\|Tls13)` |
 | 6b | Kestrel accepts TLS 1.1 | `BWR-BUILTIN-TLS-TLS11` | Same |
+| 7 | SignalR hub negotiate reachable anonymously | `BWR-SIGNALR-001` (from `signalr-anonymous-negotiate.json`) | `AddSignalR()` + `MapHub<ProbeHub>("/hubs/probe")` with no `.RequireAuthorization()` |
+| 8 | OData `$metadata` (CSDL) reachable without auth | `BWR-ODATA-001` (from `odata-metadata-exposed.json`) | Hand-rolled `MapGet("/$metadata", …)` returning the edmx envelope |
+| 9 | OData entity readable without object-level authz (BOLA/IDOR) | `BWR-ODATA-002` (from `odata-entity-object-idor.json`) | `MapGet("/odata/Orders({id:int})", …)` returns any order (incl. another owner's) with no ownership check |
 
 ## Run it
 

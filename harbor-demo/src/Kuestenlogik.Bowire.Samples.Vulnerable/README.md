@@ -23,6 +23,9 @@ Hosts an ASP.NET Core 10 web app on `https://localhost:5140` that is misconfigur
 | 10 | Permissive CORS: reflected Origin + `Allow-Credentials: true` | `BWR-REST-003` (from `permissive-cors.json`) | Middleware echoing `Origin` into `Access-Control-Allow-Origin` with credentials enabled |
 | 11 | Socket.IO handshake open to anonymous callers | `BWR-SOCKETIO-001` (from `socketio-anonymous-handshake.json`) | Hand-rolled `MapGet("/socket.io/", …)` returning the Engine.IO open packet |
 | 12 | MCP server answers `tools/list` without auth | `BWR-MCP-001` (from `mcp-anonymous-tools-list.json`) | `MapPost("/mcp", …)` returns a JSON-RPC tools/list result to any caller |
+| 13 | Server-Sent Events stream open to anonymous callers | `BWR-SSE-001` (from `sse-unauthenticated-stream.json`) | `MapGet("/events", …)` streams `text/event-stream` with a `data:` frame, no auth |
+| 14 | Open redirect via unvalidated `?url=` | `BWR-REST-004` (from `open-redirect.json`) | `MapGet("/redirect", (url) => Results.Redirect(url))` — no allow-list |
+| 15 | Verbose OData error leaks parser type + stack trace | `BWR-ODATA-003` (from `odata-verbose-error.json`) | `MapGet("/odata/Orders", …)` returns a detailed `ODataException` on a malformed `$filter` |
 
 ## Run it
 

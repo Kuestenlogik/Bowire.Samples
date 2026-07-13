@@ -228,6 +228,55 @@ app.MapPost("/mcp", () => Results.Content(
     "{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":{\"tools\":[{\"name\":\"query\",\"description\":\"Execute a SQL query against the warehouse\"},{\"name\":\"writeFile\",\"description\":\"Write a file on the host\"}]}}",
     "application/json"));
 
+// ----------------------------------------------------------------------------
+// [Finding #13] BWR-SSE-001 — Server-Sent Events stream open to anonymous
+// callers.
+//
+// An /events SSE endpoint streams server-push events to any unauthenticated
+// client. Real deployments leak order updates / notifications / presence over
+// such streams. This probe-friendly stub writes one event then closes (a real
+// stream would stay open); the sse-unauthenticated-stream.json template
+// asserts the text/event-stream content type + a `data:` frame.
+// ----------------------------------------------------------------------------
+app.MapGet("/events", async (HttpContext ctx) =>
+{
+    ctx.Response.ContentType = "text/event-stream";
+    await ctx.Response.WriteAsync("event: order\ndata: {\"orderId\":1,\"owner\":\"admin\"}\n\n");
+});
+
+// ----------------------------------------------------------------------------
+// [Finding #14] BWR-REST-004 — open redirect.
+//
+// /redirect?url=<anything> issues a 302 to the caller-supplied URL with no
+// allow-list validation, so an attacker can craft a link on this trusted
+// origin that bounces the victim to an attacker site (phishing / OAuth-token
+// theft). The scanner runs with AllowAutoRedirect=false, so the open-redirect
+// template sees the reflected Location header directly.
+// ----------------------------------------------------------------------------
+app.MapGet("/redirect", (string? url) => Results.Redirect(url ?? "/"));
+
+// ----------------------------------------------------------------------------
+// [Finding #15] BWR-ODATA-003 — verbose OData error disclosure.
+//
+// A malformed $filter makes /odata/Orders return a detailed error leaking the
+// OData parser type + a stack trace — internal implementation detail that aids
+// an attacker. Note the fixed error body (the caller's input is NOT reflected,
+// to avoid seeding an injection vector even in a deliberately-vulnerable app).
+// ----------------------------------------------------------------------------
+app.MapGet("/odata/Orders", (HttpContext ctx) =>
+{
+    var filter = ctx.Request.Query["$filter"].ToString();
+    if (!string.IsNullOrEmpty(filter))
+    {
+        return Results.Content(
+            "{\"error\":{\"code\":\"\",\"message\":\"The query specified in the URI is not valid.\",\"innererror\":{\"message\":\"Syntax error: invalid $filter expression.\",\"type\":\"Microsoft.OData.ODataException\",\"stacktrace\":\"   at Microsoft.OData.UriParser.FilterBinder.BindProperty(...)\\n   at Microsoft.OData.UriParser.MetadataBinder.Bind(...)\"}}}",
+            "application/json", statusCode: 400);
+    }
+    return Results.Content(
+        "{\"@odata.context\":\"https://localhost:5140/$metadata#Orders\",\"value\":[{\"Id\":1,\"Owner\":\"admin\",\"Total\":4211.50},{\"Id\":2,\"Owner\":\"ops\",\"Total\":88.00}]}",
+        "application/json");
+});
+
 // Plain GET / so the scanner has something to probe for the security-
 // headers + banner checks. Returning a tiny string keeps the response
 // boring on purpose.

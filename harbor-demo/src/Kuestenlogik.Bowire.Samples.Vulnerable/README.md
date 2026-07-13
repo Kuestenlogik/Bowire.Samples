@@ -20,6 +20,9 @@ Hosts an ASP.NET Core 10 web app on `https://localhost:5140` that is misconfigur
 | 7 | SignalR hub negotiate reachable anonymously | `BWR-SIGNALR-001` (from `signalr-anonymous-negotiate.json`) | `AddSignalR()` + `MapHub<ProbeHub>("/hubs/probe")` with no `.RequireAuthorization()` |
 | 8 | OData `$metadata` (CSDL) reachable without auth | `BWR-ODATA-001` (from `odata-metadata-exposed.json`) | Hand-rolled `MapGet("/$metadata", …)` returning the edmx envelope |
 | 9 | OData entity readable without object-level authz (BOLA/IDOR) | `BWR-ODATA-002` (from `odata-entity-object-idor.json`) | `MapGet("/odata/Orders({id:int})", …)` returns any order (incl. another owner's) with no ownership check |
+| 10 | Permissive CORS: reflected Origin + `Allow-Credentials: true` | `BWR-REST-003` (from `permissive-cors.json`) | Middleware echoing `Origin` into `Access-Control-Allow-Origin` with credentials enabled |
+| 11 | Socket.IO handshake open to anonymous callers | `BWR-SOCKETIO-001` (from `socketio-anonymous-handshake.json`) | Hand-rolled `MapGet("/socket.io/", …)` returning the Engine.IO open packet |
+| 12 | MCP server answers `tools/list` without auth | `BWR-MCP-001` (from `mcp-anonymous-tools-list.json`) | `MapPost("/mcp", …)` returns a JSON-RPC tools/list result to any caller |
 
 ## Run it
 

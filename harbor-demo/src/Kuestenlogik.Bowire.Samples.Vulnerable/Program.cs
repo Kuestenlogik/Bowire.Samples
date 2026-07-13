@@ -114,6 +114,27 @@ app.Use(async (ctx, next) =>
 });
 
 // ----------------------------------------------------------------------------
+// [Finding #10] BWR-REST-003 — dangerously permissive CORS.
+//
+// Reflect ANY request Origin back into Access-Control-Allow-Origin AND set
+// Access-Control-Allow-Credentials: true. That combination lets any origin
+// make credentialed cross-site requests and read the response — the classic
+// account-takeover CORS misconfig. The permissive-cors.json template sends
+// an attacker Origin and asserts it's reflected alongside the credentials
+// flag.
+// ----------------------------------------------------------------------------
+app.Use(async (ctx, next) =>
+{
+    var origin = ctx.Request.Headers.Origin.ToString();
+    if (!string.IsNullOrEmpty(origin))
+    {
+        ctx.Response.Headers["Access-Control-Allow-Origin"] = origin;
+        ctx.Response.Headers["Access-Control-Allow-Credentials"] = "true";
+    }
+    await next();
+});
+
+// ----------------------------------------------------------------------------
 // [Finding #1] BWR-REST-001 — missing security-headers middleware.
 //
 // Note the deliberate ABSENCE here: no CSP, no HSTS, no X-Frame-Options,
@@ -175,6 +196,36 @@ app.MapGet("/odata/Orders({id:int})", (int id) => Results.Content(
     $$"""
     {"@odata.context":"https://localhost:5140/$metadata#Orders/$entity","Id":{{id}},"Owner":"admin","Total":4211.50}
     """,
+    "application/json"));
+
+// ----------------------------------------------------------------------------
+// [Finding #11] BWR-SOCKETIO-001 — Socket.IO handshake open to anonymous
+// callers.
+//
+// The Engine.IO polling handshake (GET /socket.io/?EIO=4&transport=polling)
+// answers any unauthenticated client with an open packet ("0" + a JSON
+// handshake carrying the session id + upgrade transports). That sid is the
+// ticket to establishing the live connection and emitting events, so an open
+// handshake is the pre-auth entry point the socketio-anonymous-handshake.json
+// template detects. Hand-rolled (no Socket.IO server needed): the handshake
+// payload shape alone is the signal.
+// ----------------------------------------------------------------------------
+app.MapGet("/socket.io/", () => Results.Content(
+    "0{\"sid\":\"a1b2c3d4e5f6\",\"upgrades\":[\"websocket\"],\"pingInterval\":25000,\"pingTimeout\":20000,\"maxPayload\":1000000}",
+    "text/plain"));
+
+// ----------------------------------------------------------------------------
+// [Finding #12] BWR-MCP-001 — MCP server answers tools/list with no auth.
+//
+// An MCP server over the Streamable-HTTP transport that answers a JSON-RPC
+// tools/list to an unauthenticated caller discloses its entire tool surface
+// — and, worse, implies those tools (query execution, file access, config
+// mutation) are invocable pre-auth. This is the confused-deputy /
+// unauthenticated-MCP-server class the NVD sync surfaced. Hand-rolled: any
+// POST /mcp returns a tools/list result.
+// ----------------------------------------------------------------------------
+app.MapPost("/mcp", () => Results.Content(
+    "{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":{\"tools\":[{\"name\":\"query\",\"description\":\"Execute a SQL query against the warehouse\"},{\"name\":\"writeFile\",\"description\":\"Write a file on the host\"}]}}",
     "application/json"));
 
 // Plain GET / so the scanner has something to probe for the security-

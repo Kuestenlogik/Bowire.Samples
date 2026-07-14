@@ -28,6 +28,9 @@ Hosts an ASP.NET Core 10 web app on `https://localhost:5140` that is misconfigur
 | 15 | Verbose OData error leaks parser type + stack trace | `BWR-ODATA-003` (from `odata-verbose-error.json`) | `MapGet("/odata/Orders", …)` returns a detailed `ODataException` on a malformed `$filter` |
 | 16 | HTTP `TRACE` method enabled (Cross-Site Tracing) | `BWR-REST-002` (from `trace-method-allowed.json`) | `MapMethods("/", ["TRACE"], …)` answers 200 with a `message/http` echo |
 | 17 | OData entity collection enumerable without auth | `BWR-ODATA-004` (from `odata-collection-anonymous.json`) | `MapGet("/odata/Orders", …)` returns the full collection (multiple owners) to any caller |
+| 18 | WebSocket handshake accepts any Origin (CSWSH) | `BWR-WEBSOCKET-001` (from `origin-not-validated.json`) | `UseWebSockets()` + `Map("/ws", …)` with no `AllowedOrigins` check → 101 for any Origin |
+| 19 | WebSocket echoes any requested subprotocol | `BWR-WEBSOCKET-002` (from `subprotocol-reflected.json`) | `/ws` blindly `AcceptWebSocketAsync(requested[0])` — reflects an attacker-chosen `Sec-WebSocket-Protocol` |
+| 20 | GraphQL queries executable over HTTP GET | `BWR-GRAPHQL-004` (from `graphql-get-method-enabled.json`) | HotChocolate serves `GET /graphql?query=…` by default (cacheable / CSRF-reachable) |
 
 > `BWR-GRAPHQL-003` (field-suggestion-leak) intentionally does **not** fire here: HotChocolate 15 doesn't emit "Did you mean 'x'?" hints, so it isn't vulnerable to that schema-disclosure vector — the correct negative-case result. The template still ships for Apollo / graphql-js servers that leak field suggestions.
 

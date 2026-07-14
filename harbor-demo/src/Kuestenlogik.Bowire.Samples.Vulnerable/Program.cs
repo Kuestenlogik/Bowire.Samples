@@ -88,6 +88,43 @@ builder.Services.AddSignalR();
 var app = builder.Build();
 
 // ----------------------------------------------------------------------------
+// [Finding #18/#19] BWR-WEBSOCKET-001 / -002 — WebSocket handshake accepts
+// any Origin and echoes any requested subprotocol.
+//
+// UseWebSockets with no AllowedOrigins configured accepts the upgrade from
+// any site (Cross-Site WebSocket Hijacking), and the /ws handler echoes back
+// whatever Sec-WebSocket-Protocol the client asked for without validating it
+// against a supported set (subprotocol confusion). The scanner's WebSocket
+// handshake probe asserts the 101 + the reflected subprotocol.
+// ----------------------------------------------------------------------------
+app.UseWebSockets();
+app.Map("/ws", async (HttpContext ctx) =>
+{
+    if (!ctx.WebSockets.IsWebSocketRequest)
+    {
+        ctx.Response.StatusCode = 400;
+        return;
+    }
+    // No Origin allow-list check (the CSWSH vuln), and blindly echo the first
+    // requested subprotocol (the confusion vuln).
+    var requested = ctx.WebSockets.WebSocketRequestedProtocols;
+    var sub = requested.Count > 0 ? requested[0] : null;
+    using var socket = sub is null
+        ? await ctx.WebSockets.AcceptWebSocketAsync()
+        : await ctx.WebSockets.AcceptWebSocketAsync(sub);
+    // The handshake (101) is the finding; close immediately.
+    try
+    {
+        await socket.CloseAsync(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, "bye", ctx.RequestAborted);
+    }
+    catch (Exception ex) when (ex is System.Net.WebSockets.WebSocketException or IOException or OperationCanceledException)
+    {
+        // The scanner closes the TCP connection right after reading the 101
+        // handshake head, so the close frame never round-trips — expected.
+    }
+});
+
+// ----------------------------------------------------------------------------
 // [Finding #5] BWR-BUILTIN-ERROR-001 — verbose developer exception page.
 //
 // UseDeveloperExceptionPage is normally env-gated to Development. We

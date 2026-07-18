@@ -22,13 +22,13 @@
     <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.Gateway/Kuestenlogik.Bowire.Samples.Gateway.csproj" />
   </Folder>
   <Folder Name="/protocols/">
-    <!-- HTTP/gRPC single-plugin demos moved to the main Bowire repo's
-         samples/ folder as combined server + embedded-workbench samples
-         (Kuestenlogik.Bowire.Sample.*). What remains here needs external
-         infra a combined sample can't self-host: the Pulsar producer
-         (docker broker) and the TacticalApi radar server (pending its
-         own Bowire.Protocol.TacticalApi/samples/ home). -->
-    <Project Path="protocols/Pulsar.Producer/Producer.csproj" />
+    <!-- Every single-plugin demo with a .NET project moved to the main
+         Bowire repo's samples/ as a combined server + embedded-workbench
+         sample (Kuestenlogik.Bowire.Sample.*), including the broker ones
+         (MQTT self-contained; NATS/Pulsar with their own docker-compose).
+         What remains here: the Socket.IO Node.js demo (no .NET project)
+         and the TacticalApi radar server (pending its own
+         Bowire.Protocol.TacticalApi/samples/ home). -->
     <Project Path="protocols/TacticalApi.RadarSweep/RadarSweep.csproj" />
   </Folder>
 </Solution>

@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <PackageReference Include="Kuestenlogik.Bowire" Version="2.3.0" />
+    <PackageReference Include="Kuestenlogik.Bowire.Protocol.Rest" Version="2.3.0" />
+    <!-- The interceptor moved out of Core in v2.1 (Welle 2) — an embedded
+         host that wants app.UseBowireInterceptor() references it explicitly. -->
+    <PackageReference Include="Kuestenlogik.Bowire.Interceptor" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8" />
+    <ProjectReference Include="..\Kuestenlogik.Bowire.Samples.Shared\Kuestenlogik.Bowire.Samples.Shared.csproj" />
+  </ItemGroup>
+</Project>

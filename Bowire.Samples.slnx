@@ -17,6 +17,7 @@
     <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.SchemaSemantics/Kuestenlogik.Bowire.Samples.SchemaSemantics.csproj" />
     <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.TacticalApi/Kuestenlogik.Bowire.Samples.TacticalApi.csproj" />
     <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.Vulnerable/Kuestenlogik.Bowire.Samples.Vulnerable.csproj" />
+    <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.Interceptor/Kuestenlogik.Bowire.Samples.Interceptor.csproj" />
   </Folder>
   <Folder Name="/protocols/">
     <Project Path="protocols/GraphQL.Books/Books.csproj" />

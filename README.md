@@ -5,9 +5,9 @@ Sample applications demonstrating [Bowire](https://github.com/Kuestenlogik/Bowir
 | Axis | Folder | Story |
 |---|---|---|
 | **Harbor demo** | [`harbor-demo/`](harbor-demo/) | One shared **Harbor Control Center** domain implemented across every protocol. Side-by-side comparison of how Bowire renders gRPC vs REST vs SignalR vs … against the *same* business model. Powers the marketing-site screenshots + the multi-protocol USP. |
-| **Protocols** | [`protocols/`](protocols/) | The two demos that can't be a single self-contained .NET sample: a Node.js Socket.IO server and the TacticalAPI radar server. Every single-plugin **.NET** demo (HTTP/gRPC **and** the message brokers) moved to the main repo's [`samples/`](https://github.com/Kuestenlogik/Bowire/tree/main/samples). |
+| **Protocols** | [`protocols/`](protocols/) | Just the TacticalAPI radar server, until it moves to its own repo. Every other single-plugin demo moved to the repo that owns its plugin — the monorepo protocols to the main repo's [`samples/`](https://github.com/Kuestenlogik/Bowire/tree/main/samples). |
 
-Pick `harbor-demo/` when you want to *compare* protocols. For a single plugin in isolation, use the combined `Kuestenlogik.Bowire.Sample.*` demos in the [main repo's `samples/`](https://github.com/Kuestenlogik/Bowire/tree/main/samples); `protocols/` here keeps only the Node.js and TacticalAPI demos.
+Pick `harbor-demo/` when you want to *compare* protocols. For a single plugin in isolation, use the combined `Kuestenlogik.Bowire.Sample.*` demos in the [main repo's `samples/`](https://github.com/Kuestenlogik/Bowire/tree/main/samples); `protocols/` here keeps only the TacticalAPI demo for now.
 
 ## Harbor demo
 
@@ -97,13 +97,12 @@ Each sample directory ships its own README with the method list, minimum-viable 
 
 ## Protocols (external-infra demos)
 
-The [`protocols/`](protocols/) folder now holds only the two demos that can't be a single self-contained .NET sample: a Node.js Socket.IO server, and the TacticalAPI radar server (pending its move to its own repo).
+The [`protocols/`](protocols/) folder now holds only the TacticalAPI radar server, and only until it moves to its own repo (`Bowire.Protocol.TacticalApi/samples/`).
 
 | Sample | Plugin | How to run | Connect from Bowire |
 |--------|--------|------------|---------------------|
-| [`SocketIo.Chat`](protocols/SocketIo.Chat) | `Bowire.Protocol.SocketIo` | `npm start` | `http://localhost:5189` |
 | [`TacticalApi.RadarSweep`](protocols/TacticalApi.RadarSweep) | `Bowire.Protocol.TacticalApi` | `dotnet run` | `http://localhost:5191` |
 
-Every single-plugin demo that could become a self-contained .NET project moved to the **main Bowire repo** as a _combined_ server + embedded-workbench sample under [`samples/Kuestenlogik.Bowire.Sample.*`](https://github.com/Kuestenlogik/Bowire/tree/main/samples) — the HTTP/gRPC protocols (Rest, gRPC, GraphQL, OData, JSON-RPC, SignalR, SSE, WebSocket, SOAP, MCP) **and** the message brokers (MQTT self-contained; NATS + Pulsar with their own `docker-compose.yml`). Each both serves its protocol **and** mounts `/bowire`, so it doubles as a discovery target and a hosting demo.
+Every single-plugin demo moved to the repo that owns its plugin, as a _combined_ server + embedded-workbench sample. The main **Bowire** repo's [`samples/`](https://github.com/Kuestenlogik/Bowire/tree/main/samples) took the monorepo protocols — the HTTP/gRPC ones (Rest, gRPC, GraphQL, OData, JSON-RPC, SignalR, SSE, WebSocket, SOAP, MCP), the message brokers (MQTT self-contained; NATS + Pulsar with their own `docker-compose.yml`), and the Node.js Socket.IO server (`samples/socketio-chat`). Each .NET one both serves its protocol **and** mounts `/bowire`, so it doubles as a discovery target and a hosting demo.
 
-(History: migrated from `Kuestenlogik/Bowire/examples/` in 2026-06 to consolidate every sample axis into one repo; the single-plugin demos moved to the main repo's `samples/` in 2026-07 as combined embedded samples, leaving only the Node.js and TacticalAPI demos here.)
+(History: migrated from `Kuestenlogik/Bowire/examples/` in 2026-06 to consolidate every sample axis into one repo; the single-plugin demos moved to their owning plugin's repo in 2026-07 as combined embedded samples, leaving only the TacticalAPI demo here until its own repo's sample lands.)

@@ -30,6 +30,22 @@ All harbor-demo samples share a single **Harbor Control Center** domain (`Ship`,
 
 Plus **`Kuestenlogik.Bowire.Samples.Shared`** — the common domain types + seeded `HarborStore` with 3 ships, 5 docks, 3 cranes, 6 containers, 3 port calls. Every other project references it.
 
+## Harbor microservices (redesign, in progress)
+
+The harbor demo is being reshaped from the one-store monolith above into
+bounded-context **microservices** — each domain part on the protocol that fits
+it, discovered as one landscape. See
+[`harbor-demo/REDESIGN.md`](harbor-demo/REDESIGN.md). Landed so far:
+
+| Service | Context | Protocol | Port |
+|---|---|---|---|
+| **Fleet** | vessel registry (master data) | gRPC | 5150 |
+| **Inventory** | docks + crane config | OData | 5151 |
+| **Gateway** | one workbench over all services (catalogue discovery) | Bowire | 5159 |
+
+Run the services, then the gateway, and browse them together at
+`https://localhost:5159/bowire`.
+
 ## Domain
 
 ```text

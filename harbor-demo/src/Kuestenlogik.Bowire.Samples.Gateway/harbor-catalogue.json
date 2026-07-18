@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "url": "http://localhost:5150",
+      "name": "Fleet — vessel registry",
+      "protocols": ["grpc"],
+      "tags": ["context:fleet", "kind:master-data"]
+    },
+    {
+      "url": "https://localhost:5151/odata",
+      "name": "Inventory — docks & cranes",
+      "protocols": ["odata"],
+      "tags": ["context:inventory", "kind:assets"]
+    }
+  ]
+}

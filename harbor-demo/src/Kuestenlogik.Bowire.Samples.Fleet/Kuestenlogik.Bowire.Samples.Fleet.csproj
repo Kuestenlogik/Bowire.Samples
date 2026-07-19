@@ -2,7 +2,7 @@
   <ItemGroup>
     <PackageReference Include="Grpc.AspNetCore" Version="2.80.0" />
     <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.80.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.81.1" PrivateAssets="All" />
+    <PackageReference Include="Grpc.Tools" Version="2.82.0" PrivateAssets="All" />
     <ProjectReference Include="..\Kuestenlogik.Bowire.Samples.Shared\Kuestenlogik.Bowire.Samples.Shared.csproj" />
   </ItemGroup>
   <ItemGroup>

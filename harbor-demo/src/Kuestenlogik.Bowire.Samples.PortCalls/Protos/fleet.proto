@@ -1,0 +1,35 @@
+// Copyright 2026 Küstenlogik
+// SPDX-License-Identifier: Apache-2.0
+syntax = "proto3";
+
+option csharp_namespace = "Harbor.Fleet.V1";
+package harbor.fleet.v1;
+
+// Client-side copy of Fleet's contract — PortCalls calls GetShip over gRPC
+// to resolve the `ship` field of a port call. Kept identical to Fleet's
+// own fleet.proto (contract-first; CI would assert they don't drift).
+service Fleet {
+  rpc GetShip(GetShipRequest) returns (Ship);
+  rpc ListShips(ListShipsRequest) returns (stream Ship);
+}
+
+message GetShipRequest {
+  int32 id = 1;
+}
+
+message ListShipsRequest {}
+
+enum ShipType {
+  SHIP_TYPE_UNSPECIFIED = 0;
+  CONTAINER = 1;
+  BULK = 2;
+  TANKER = 3;
+}
+
+message Ship {
+  int32 id = 1;
+  string name = 2;
+  string flag = 3;
+  int32 length_meters = 4;
+  ShipType type = 5;
+}

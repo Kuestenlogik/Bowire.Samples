@@ -36,9 +36,13 @@ it, discovered as one landscape. See
 |---|---|---|---|
 | **Fleet** | vessel registry (master data) | gRPC | 5150 |
 | **Inventory** | docks + crane config | OData | 5151 |
+| **Gate** | container gate-in/out lifecycle | REST | 5152 |
+| **PortCalls** | port-call orchestration (BFF over Fleet + Inventory + Gate) | GraphQL | 5153 |
 | **Gateway** | one workbench over all services (catalogue discovery) | Bowire | 5159 |
 
-Run the services, then the gateway, and browse them together at
+`PortCalls` is a BFF: a single `portCall(id) { ship dock containers }` query
+fans out to Fleet (gRPC), Inventory (OData) and Gate (REST) — one query, three
+wires. Run the services, then the gateway, and browse them together at
 `https://localhost:5159/bowire`.
 
 ## Domain

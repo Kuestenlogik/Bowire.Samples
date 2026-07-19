@@ -12,6 +12,18 @@
       "name": "Inventory — docks & cranes",
       "protocols": ["odata"],
       "tags": ["context:inventory", "kind:assets"]
+    },
+    {
+      "url": "http://localhost:5152",
+      "name": "Gate — container gate-in/out",
+      "protocols": ["rest"],
+      "tags": ["context:gate", "kind:operations"]
+    },
+    {
+      "url": "http://localhost:5153/graphql",
+      "name": "PortCalls — orchestration BFF",
+      "protocols": ["graphql"],
+      "tags": ["context:portcalls", "kind:saga"]
     }
   ]
 }

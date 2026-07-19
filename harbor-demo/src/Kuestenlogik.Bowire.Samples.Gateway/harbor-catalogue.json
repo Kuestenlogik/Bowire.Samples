@@ -24,6 +24,24 @@
       "name": "PortCalls — orchestration BFF",
       "protocols": ["graphql"],
       "tags": ["context:portcalls", "kind:saga"]
+    },
+    {
+      "url": "ws://localhost:5154/ais",
+      "name": "Tracking — raw AIS ingress",
+      "protocols": ["websocket"],
+      "tags": ["context:tracking", "kind:ais-ingress"]
+    },
+    {
+      "url": "http://localhost:5155/ops",
+      "name": "Operations — operator console",
+      "protocols": ["signalr"],
+      "tags": ["context:operations", "kind:egress"]
+    },
+    {
+      "url": "http://localhost:5156/arrivals",
+      "name": "Arrivals — public board (CQRS read)",
+      "protocols": ["sse"],
+      "tags": ["context:arrivals", "kind:read-model"]
     }
   ]
 }

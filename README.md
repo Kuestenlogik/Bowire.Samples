@@ -38,11 +38,17 @@ it, discovered as one landscape. See
 | **Inventory** | docks + crane config | OData | 5151 |
 | **Gate** | container gate-in/out lifecycle | REST | 5152 |
 | **PortCalls** | port-call orchestration (BFF over Fleet + Inventory + Gate) | GraphQL | 5153 |
+| **Tracking** | raw AIS position ingress | WebSocket | 5154 |
+| **Operations** | operator console egress (consumes Tracking) | SignalR | 5155 |
+| **Arrivals** | public arrivals board (CQRS read-model) | SSE | 5156 |
 | **Gateway** | one workbench over all services (catalogue discovery) | Bowire | 5159 |
 
 `PortCalls` is a BFF: a single `portCall(id) { ship dock containers }` query
 fans out to Fleet (gRPC), Inventory (OData) and Gate (REST) — one query, three
-wires. Run the services, then the gateway, and browse them together at
+wires. The live cascade shows the deliberate WS-vs-SignalR contrast: `Tracking`
+is a bare WebSocket AIS ingress, `Operations` re-emits it with SignalR's
+group/stream/broadcast features, and `Arrivals` is the resumable SSE read-model.
+Run the services, then the gateway, and browse them together at
 `https://localhost:5159/bowire`.
 
 ## Domain

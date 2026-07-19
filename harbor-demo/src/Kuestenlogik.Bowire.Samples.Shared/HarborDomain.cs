@@ -76,3 +76,24 @@ public sealed record PortCall(
     PortCallStatus Status,
     CargoOperation CargoOperation,
     string? Notes);
+
+// A live AIS position frame — the wire shape Tracking (WebSocket) emits and
+// Operations (SignalR) re-broadcasts. Keyed by ShipId so a position
+// correlates back to a Ship / PortCall across the landscape.
+public sealed record AisPosition(
+    int ShipId,
+    double Latitude,
+    double Longitude,
+    double SpeedKnots,
+    double CourseDegrees,
+    DateTimeOffset At);
+
+// A public arrivals-board event — Arrivals' (SSE) CQRS read-model projection
+// of a port call reaching a milestone. Seq is the monotonic id SSE resumes
+// from via Last-Event-ID.
+public sealed record ArrivalEvent(
+    long Seq,
+    int PortCallId,
+    int ShipId,
+    PortCallStatus Status,
+    DateTimeOffset At);

@@ -22,5 +22,8 @@
     <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.Gateway/Kuestenlogik.Bowire.Samples.Gateway.csproj" />
     <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.Gate/Kuestenlogik.Bowire.Samples.Gate.csproj" />
     <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.PortCalls/Kuestenlogik.Bowire.Samples.PortCalls.csproj" />
+    <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.Tracking/Kuestenlogik.Bowire.Samples.Tracking.csproj" />
+    <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.Operations/Kuestenlogik.Bowire.Samples.Operations.csproj" />
+    <Project Path="harbor-demo/src/Kuestenlogik.Bowire.Samples.Arrivals/Kuestenlogik.Bowire.Samples.Arrivals.csproj" />
   </Folder>
 </Solution>

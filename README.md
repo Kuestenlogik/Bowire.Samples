@@ -53,8 +53,26 @@ group/stream/broadcast features, and `Arrivals` is the resumable SSE read-model.
 `Telemetry` runs an embedded MQTT broker for live crane status (the live half
 of the Crane shared-kernel split — Inventory owns the static config on the same
 `CraneId`) and serves its own AsyncAPI schema; `Assistant` exposes the whole
-landscape as MCP tools an AI agent can call. Run the services, then the gateway,
-and browse them together at `https://localhost:5159/bowire`.
+landscape as MCP tools an AI agent can call.
+
+**One-command boot** — the Aspire AppHost starts the entire landscape (each
+service on its fixed catalogue port) and gives you the dashboard for logs:
+
+```bash
+dotnet run --project harbor-demo/src/Kuestenlogik.Bowire.Samples.AppHost
+```
+
+Then browse everything together at `https://localhost:5159/bowire`.
+
+**The correlated timeline** — the money-shot recording at
+[`harbor-demo/recordings/port-call-1.bowire-recording.json`](harbor-demo/recordings/port-call-1.bowire-recording.json)
+captures **one port call (id 1, ship 101 "Nordstern", dock 1, crane 1) across
+all eight wires** — gRPC, OData, REST, GraphQL, WebSocket, SignalR, SSE, MQTT —
+keyed by the same shared ids, so the timeline reads as a single business event
+crossing the whole landscape. Validate it with `bowire recording validate`,
+replay its unary steps against the running landscape from the workbench's
+Recordings rail, or re-serve the recorded surface with
+`bowire mock --recording harbor-demo/recordings/port-call-1.bowire-recording.json`.
 
 ## Domain
 

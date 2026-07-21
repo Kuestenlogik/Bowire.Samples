@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Sdk Name="Aspire.AppHost.Sdk" Version="13.4.6" />
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="13.4.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Kuestenlogik.Bowire.Samples.Fleet\Kuestenlogik.Bowire.Samples.Fleet.csproj" />
+    <ProjectReference Include="..\Kuestenlogik.Bowire.Samples.Inventory\Kuestenlogik.Bowire.Samples.Inventory.csproj" />
+    <ProjectReference Include="..\Kuestenlogik.Bowire.Samples.Gate\Kuestenlogik.Bowire.Samples.Gate.csproj" />
+    <ProjectReference Include="..\Kuestenlogik.Bowire.Samples.PortCalls\Kuestenlogik.Bowire.Samples.PortCalls.csproj" />
+    <ProjectReference Include="..\Kuestenlogik.Bowire.Samples.Tracking\Kuestenlogik.Bowire.Samples.Tracking.csproj" />
+    <ProjectReference Include="..\Kuestenlogik.Bowire.Samples.Operations\Kuestenlogik.Bowire.Samples.Operations.csproj" />
+    <ProjectReference Include="..\Kuestenlogik.Bowire.Samples.Arrivals\Kuestenlogik.Bowire.Samples.Arrivals.csproj" />
+    <ProjectReference Include="..\Kuestenlogik.Bowire.Samples.Telemetry\Kuestenlogik.Bowire.Samples.Telemetry.csproj" />
+    <ProjectReference Include="..\Kuestenlogik.Bowire.Samples.Assistant\Kuestenlogik.Bowire.Samples.Assistant.csproj" />
+    <ProjectReference Include="..\Kuestenlogik.Bowire.Samples.Gateway\Kuestenlogik.Bowire.Samples.Gateway.csproj" />
+  </ItemGroup>
+</Project>

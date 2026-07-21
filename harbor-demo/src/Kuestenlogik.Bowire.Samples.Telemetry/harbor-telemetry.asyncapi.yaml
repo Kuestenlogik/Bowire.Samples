@@ -1,0 +1,85 @@
+asyncapi: 3.0.0
+info:
+  title: Harbor Telemetry — Equipment Device Bus
+  version: 1.0.0
+  description: |
+    AsyncAPI 3.0 schema for the Telemetry service's equipment device bus.
+    Telemetry owns both the wire (an embedded MQTT broker on :1883) AND
+    this schema — point Bowire at this document for schema-driven
+    discovery, or straight at mqtt://localhost:1883 for topic-tree
+    discovery.
+
+    This is the live half of the Crane shared-kernel split: Inventory
+    (OData) owns each crane's static config keyed by CraneId; Telemetry
+    owns the live status on the same CraneId.
+
+servers:
+  deviceBus:
+    host: 'localhost:1883'
+    protocol: mqtt
+    description: Embedded MQTT broker run in-process by the Telemetry service.
+
+channels:
+  craneStatus:
+    address: 'harbor/crane/{craneId}/status'
+    title: Crane status telemetry
+    summary: One retained JSON status frame per crane, every second.
+    parameters:
+      craneId:
+        description: Crane identifier — the same CraneId Inventory keys its config on.
+    messages:
+      craneStatusUpdate:
+        $ref: '#/components/messages/craneStatusUpdate'
+
+  publisherStatus:
+    address: 'harbor/status/telemetry'
+    title: Telemetry liveness
+    summary: Last Will and Testament — the broker announces a publisher drop.
+    messages:
+      publisherWill:
+        $ref: '#/components/messages/publisherWill'
+
+operations:
+  receiveCraneStatus:
+    action: receive
+    channel:
+      $ref: '#/channels/craneStatus'
+    summary: Subscribe to live crane status from every crane on the harbour.
+    bindings:
+      mqtt:
+        qos: 1
+        retain: true
+
+  receivePublisherStatus:
+    action: receive
+    channel:
+      $ref: '#/channels/publisherStatus'
+    summary: Subscribe to the Telemetry publisher liveness channel.
+    bindings:
+      mqtt:
+        qos: 1
+        retain: true
+
+components:
+  messages:
+    craneStatusUpdate:
+      name: craneStatusUpdate
+      title: Crane status update
+      summary: A single crane's current operational state + live load.
+      contentType: application/json
+      payload:
+        type: object
+        properties:
+          craneId: { type: integer }
+          status: { type: string, enum: [Idle, Lifting, Moving, Maintenance] }
+          boomAngleDeg: { type: number }
+          loadTonnes: { type: number }
+          at: { type: integer, description: Unix time (ms) }
+    publisherWill:
+      name: publisherWill
+      title: Publisher liveness
+      contentType: application/json
+      payload:
+        type: object
+        properties:
+          state: { type: string, enum: [offline] }

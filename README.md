@@ -41,6 +41,8 @@ it, discovered as one landscape. See
 | **Tracking** | raw AIS position ingress | WebSocket | 5154 |
 | **Operations** | operator console egress (consumes Tracking) | SignalR | 5155 |
 | **Arrivals** | public arrivals board (CQRS read-model) | SSE | 5156 |
+| **Telemetry** | crane device bus + its own AsyncAPI schema | MQTT (broker :1883) + AsyncAPI | 5157 |
+| **Assistant** | AI ops assistant fronting the services | MCP | 5158 |
 | **Gateway** | one workbench over all services (catalogue discovery) | Bowire | 5159 |
 
 `PortCalls` is a BFF: a single `portCall(id) { ship dock containers }` query
@@ -48,8 +50,11 @@ fans out to Fleet (gRPC), Inventory (OData) and Gate (REST) — one query, three
 wires. The live cascade shows the deliberate WS-vs-SignalR contrast: `Tracking`
 is a bare WebSocket AIS ingress, `Operations` re-emits it with SignalR's
 group/stream/broadcast features, and `Arrivals` is the resumable SSE read-model.
-Run the services, then the gateway, and browse them together at
-`https://localhost:5159/bowire`.
+`Telemetry` runs an embedded MQTT broker for live crane status (the live half
+of the Crane shared-kernel split — Inventory owns the static config on the same
+`CraneId`) and serves its own AsyncAPI schema; `Assistant` exposes the whole
+landscape as MCP tools an AI agent can call. Run the services, then the gateway,
+and browse them together at `https://localhost:5159/bowire`.
 
 ## Domain
 

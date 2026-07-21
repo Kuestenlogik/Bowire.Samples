@@ -1,6 +1,13 @@
 # Harbor demo — microservices redesign (design record)
 
-**Status:** Proposed · **Scope:** `Bowire.Samples/harbor-demo`
+**Status:** Implemented (Phases 0–5, 2026-07) · **Scope:** `Bowire.Samples/harbor-demo`
+
+> Landed: Phase 0 `HarborSeed` split · Phase 1 Fleet/Inventory/Gateway ·
+> Phase 2 Gate + PortCalls BFF · Phase 3 Tracking/Operations/Arrivals ·
+> Phase 4 Telemetry (MQTT + AsyncAPI) + Assistant (MCP) · Phase 5 Aspire
+> AppHost + the correlated recording
+> (`recordings/port-call-1.bowire-recording.json`). The optional extended
+> tier (Customs/SOAP, backbone swap-ins) remains open by design.
 
 ## Context
 

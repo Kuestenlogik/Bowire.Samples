@@ -74,6 +74,14 @@ replay its unary steps against the running landscape from the workbench's
 Recordings rail, or re-serve the recorded surface with
 `bowire mock --recording harbor-demo/recordings/port-call-1.bowire-recording.json`.
 
+What the mock serves from this file: the REST, OData and GraphQL steps
+answer plain HTTP calls, the WebSocket / SignalR / SSE steps replay their
+captured frames on the recorded cadence, and the MQTT step publishes
+through the mock's embedded broker. The gRPC step carries no
+`responseBinary` wire bytes (the file is hand-curated), so the mock
+lists it as not replayable at startup — record against the live Fleet
+service to capture a servable gRPC step.
+
 ## Domain
 
 ```text

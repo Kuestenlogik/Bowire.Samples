@@ -7,7 +7,8 @@ using Kuestenlogik.Bowire.Samples.Assistant;
 using ModelContextProtocol.Server;
 
 // Assistant — the AI ops assistant over the harbor, as an MCP server on the
-// HTTP/SSE transport. An MCP-aware agent (Claude, Cursor, …) calls tools like
+// streamable-HTTP transport (SSE is only the SDK's fallback for older
+// servers). An MCP-aware agent (Claude, Cursor, …) calls tools like
 // `describe_port_call` and the Assistant fans out to the running services
 // (PortCalls over GraphQL, Gate over REST) to answer — so the AI surface
 // fronts the real landscape. A pure server; the Harbor.Gateway discovers it via
@@ -18,7 +19,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<HarborGateway>();
 builder.Services
     .AddMcpServer()
-    .WithHttpTransport()
+    // Pinned rather than inherited — SDK 2.0.0 flipped
+    // HttpServerTransportOptions.Stateless from false to true, and a sample
+    // that changes transport semantics on a dependency bump teaches the wrong
+    // thing. Stateless holds here: every tool fans out to the running services
+    // through HarborGateway and keeps nothing between calls.
+    .WithHttpTransport(o => o.Stateless = true)
     .WithToolsFromAssembly();
 
 var app = builder.Build();

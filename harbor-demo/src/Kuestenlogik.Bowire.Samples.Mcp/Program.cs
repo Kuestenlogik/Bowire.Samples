@@ -7,9 +7,10 @@ using ModelContextProtocol.Server;
 
 // Isolated MCP (Model Context Protocol) sample. Exposes the harbor as
 // a set of AI-callable tools plus a couple of resources, over the
-// HTTP/SSE transport. AI clients like Claude, Cursor, or any MCP-aware
-// agent can invoke `schedule_port_call` and read `harbor://ships`
-// directly without knowing anything about gRPC / REST / etc.
+// streamable-HTTP transport — SSE is what the SDK falls back to for older
+// servers, not the primary any more. AI clients like Claude, Cursor, or
+// any MCP-aware agent can invoke `schedule_port_call` and read
+// `harbor://ships` directly without knowing anything about gRPC / REST.
 //
 // Discovery is external — Bowire's MCP plugin is a client that browses
 // a remote MCP server. Browse this sample with a standalone Bowire:
@@ -20,7 +21,13 @@ builder.Services.AddSingleton(HarborStore.CreateSeeded());
 
 builder.Services
     .AddMcpServer()
-    .WithHttpTransport()
+    // Pinned rather than inherited. SDK 2.0.0 flipped
+    // HttpServerTransportOptions.Stateless from false to true, and a sample
+    // whose transport semantics change with a dependency bump teaches the
+    // wrong thing. Stateless is right here: what state exists lives in the
+    // HarborStore singleton above, shared by every caller, not in an MCP
+    // session — so there is nothing to resume and nothing to lose.
+    .WithHttpTransport(o => o.Stateless = true)
     .WithToolsFromAssembly()
     .WithResourcesFromAssembly();
 

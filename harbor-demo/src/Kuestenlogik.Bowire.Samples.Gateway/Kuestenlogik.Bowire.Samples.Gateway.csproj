@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <ItemGroup>
-    <PackageReference Include="Kuestenlogik.Bowire" Version="2.3.0" />
+    <PackageReference Include="Kuestenlogik.Bowire" Version="2.4.0" />
     <!-- Protocol plugins for the services the catalogue lists, so the
          workbench can actually drive the discovered gRPC + OData targets. -->
-    <PackageReference Include="Kuestenlogik.Bowire.Protocol.Grpc" Version="2.3.0" />
-    <PackageReference Include="Kuestenlogik.Bowire.Protocol.OData" Version="2.3.0" />
+    <PackageReference Include="Kuestenlogik.Bowire.Protocol.Grpc" Version="2.4.0" />
+    <PackageReference Include="Kuestenlogik.Bowire.Protocol.OData" Version="2.4.0" />
   </ItemGroup>
   <ItemGroup>
     <!-- The local catalogue the LocalCatalogueProvider reads (path set in

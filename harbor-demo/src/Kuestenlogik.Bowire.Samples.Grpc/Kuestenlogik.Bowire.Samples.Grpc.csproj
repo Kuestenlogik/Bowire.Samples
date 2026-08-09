@@ -2,7 +2,7 @@
   <ItemGroup>
     <PackageReference Include="Kuestenlogik.Bowire" Version="2.4.0" />
     <PackageReference Include="Kuestenlogik.Bowire.Protocol.Grpc" Version="2.4.0" />
-    <PackageReference Include="Grpc.AspNetCore" Version="2.80.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.83.0" />
     <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.80.0" />
     <!-- gRPC-Web middleware: the same HarborService is reachable over
          both native HTTP/2 (bowire grpc@host:5110) and gRPC-Web over

@@ -6,13 +6,13 @@
 
   <ItemGroup>
     <PackageReference Include="Kuestenlogik.Bowire" Version="2.4.0" />
-    <PackageReference Include="Grpc.AspNetCore" Version="2.80.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.83.0" />
     <!-- gRPC-Web middleware so the same Situation service is reachable
          over both native HTTP/2 (bowire tacticalapi@host:5120) and
          gRPC-Web over HTTP/1.1, mirroring Rheinmetall TacNet's
          dual-port (4267 / 4268) pattern documented upstream. -->
     <PackageReference Include="Grpc.AspNetCore.Web" Version="2.80.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.80.0">
+    <PackageReference Include="Grpc.Tools" Version="2.83.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

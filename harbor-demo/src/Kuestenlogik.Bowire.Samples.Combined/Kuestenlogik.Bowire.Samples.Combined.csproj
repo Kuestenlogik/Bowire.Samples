@@ -6,7 +6,7 @@
     <PackageReference Include="Kuestenlogik.Bowire.Protocol.SignalR" Version="2.4.0" />
     <PackageReference Include="Kuestenlogik.Bowire.Protocol.WebSocket" Version="2.4.0" />
     <PackageReference Include="Kuestenlogik.Bowire.Protocol.Sse" Version="2.4.0" />
-    <PackageReference Include="Grpc.AspNetCore" Version="2.80.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.83.0" />
     <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.80.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.10" />
     <ProjectReference Include="..\Kuestenlogik.Bowire.Samples.Shared\Kuestenlogik.Bowire.Samples.Shared.csproj" />

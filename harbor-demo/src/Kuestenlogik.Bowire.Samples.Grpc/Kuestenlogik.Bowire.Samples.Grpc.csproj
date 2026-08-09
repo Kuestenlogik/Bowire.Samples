@@ -9,7 +9,7 @@
          HTTP/1.1 (bowire grpcweb@host:5110). Demos the dual-transport
          pattern Rheinmetall TacticalAPI uses. Requires Bowire 1.2.0+
          on the client side to consume the web path. -->
-    <PackageReference Include="Grpc.AspNetCore.Web" Version="2.80.0" />
+    <PackageReference Include="Grpc.AspNetCore.Web" Version="2.83.0" />
     <ProjectReference Include="..\Kuestenlogik.Bowire.Samples.Shared\Kuestenlogik.Bowire.Samples.Shared.csproj" />
   </ItemGroup>
   <ItemGroup>

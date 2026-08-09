@@ -20,7 +20,7 @@
     <!-- gRPC + Server Reflection versions match
          Kuestenlogik.Bowire.Samples.Grpc to keep the samples
          solution coherent. -->
-    <PackageReference Include="Grpc.AspNetCore" Version="2.80.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.83.0" />
     <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.80.0" />
   </ItemGroup>
 

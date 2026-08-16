@@ -15,7 +15,7 @@
   <ItemGroup>
     <!-- HotChocolate version matches Kuestenlogik.Bowire.Samples.GraphQL
          to avoid drift across the samples solution. -->
-    <PackageReference Include="HotChocolate.AspNetCore" Version="16.6.0" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="16.6.1" />
 
     <!-- gRPC + Server Reflection versions match
          Kuestenlogik.Bowire.Samples.Grpc to keep the samples

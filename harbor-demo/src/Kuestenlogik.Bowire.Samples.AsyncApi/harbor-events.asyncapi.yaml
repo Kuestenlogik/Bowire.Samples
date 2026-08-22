@@ -31,7 +31,8 @@ channels:
     description: |
       Subscribing clients (dashboards, automation rules, the
       Bowire workbench) receive a stream of status updates with crane
-      id, current operational status, boom angle, and load tonnage.
+      id, the container being lifted (null when idle), current
+      operational status, boom angle, and load tonnage.
       Frames are retained — fresh subscribers see the latest state
       immediately without waiting for the next tick.
     parameters:

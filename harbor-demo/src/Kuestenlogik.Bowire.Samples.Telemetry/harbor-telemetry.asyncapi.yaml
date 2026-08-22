@@ -71,6 +71,15 @@ components:
         type: object
         properties:
           craneId: { type: integer }
+          containerId:
+            type: [string, 'null']
+            description: >-
+              The container this crane currently has hold of, or null when it is
+              not lifting. The same id Inventory and the GraphQL port-call query
+              use, which is what lets a correlated timeline join this stream to
+              the rest of the landscape — craneId alone is a small integer and
+              cannot carry that weight.
+            examples: ['MSCU1234567']
           status: { type: string, enum: [Idle, Lifting, Moving, Maintenance] }
           boomAngleDeg: { type: number }
           loadTonnes: { type: number }

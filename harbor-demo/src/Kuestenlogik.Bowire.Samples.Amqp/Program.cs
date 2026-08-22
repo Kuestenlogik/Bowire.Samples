@@ -122,6 +122,9 @@ _ = Task.Run(async () =>
                 var payload = JsonSerializer.SerializeToUtf8Bytes(new
                 {
                     craneId = crane.Id,
+                    // Same event as the MQTT samples emit, so the same fields —
+                    // the protocol changes, the crane's story does not.
+                    containerId = crane.LiftingContainerId,
                     status = crane.Status.ToString(),
                     boomAngle = Math.Round(rng.NextDouble() * 90, 1),
                     loadTonnes = Math.Round(rng.NextDouble() * (double)crane.MaxLiftTonnes, 1),

@@ -61,6 +61,10 @@ _ = Task.Run(async () =>
             var payload = JsonSerializer.Serialize(new
             {
                 craneId = crane.Id,
+                // Same shape as the Telemetry sample's frames on purpose — this
+                // is the same event, and a standalone sample that describes it
+                // differently teaches the wrong wire format.
+                containerId = crane.LiftingContainerId,
                 status = crane.Status.ToString(),
                 boomAngle = Math.Round(rng.NextDouble() * 90, 1),
                 loadTonnes = Math.Round(rng.NextDouble() * (double)crane.MaxLiftTonnes, 1),

@@ -122,9 +122,9 @@
       "status": "OK",
       "durationMs": 3000,
       "receivedMessages": [
-        { "index": 0, "timestampMs": 0,    "data": { "craneId": 1, "status": "Lifting", "boomAngleDeg": 41.5, "loadTonnes": 22.0, "at": 1784678400000 } },
-        { "index": 1, "timestampMs": 1000, "data": { "craneId": 1, "status": "Lifting", "boomAngleDeg": 44.0, "loadTonnes": 22.0, "at": 1784678401000 } },
-        { "index": 2, "timestampMs": 2000, "data": { "craneId": 1, "status": "Idle", "boomAngleDeg": 12.0, "loadTonnes": 0.0, "at": 1784678402000 } }
+        { "index": 0, "timestampMs": 0,    "data": { "craneId": 1, "containerId": "MSCU1234567", "status": "Lifting", "boomAngleDeg": 41.5, "loadTonnes": 22.0, "at": 1784678400000 } },
+        { "index": 1, "timestampMs": 1000, "data": { "craneId": 1, "containerId": "MSCU1234567", "status": "Lifting", "boomAngleDeg": 44.0, "loadTonnes": 22.0, "at": 1784678401000 } },
+        { "index": 2, "timestampMs": 2000, "data": { "craneId": 1, "containerId": null, "status": "Idle", "boomAngleDeg": 12.0, "loadTonnes": 0.0, "at": 1784678402000 } }
       ]
     }
   ]

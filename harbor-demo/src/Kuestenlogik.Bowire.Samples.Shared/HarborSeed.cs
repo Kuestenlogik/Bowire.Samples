@@ -37,9 +37,15 @@ public static class HarborSeed
         new(5, 11.5m, HasCrane: false, OccupiedByShipId: null),
     ];
 
+    // Crane 1 is lifting MSCU1234567, which is not an arbitrary pairing: crane 1
+    // works Dock 1, Dock 1 is occupied by ship 101, and MSCU1234567 is the
+    // container being loaded onto ship 101 (below). The relationship was always
+    // implied by this data; naming it is what lets the telemetry stream join the
+    // REST and GraphQL steps on a value that means something.
     public static IReadOnlyList<Crane> Cranes() =>
     [
-        new(Id: 1, DockNumber: 1, MaxLiftTonnes: 50m, Status: CraneStatus.Lifting),
+        new(Id: 1, DockNumber: 1, MaxLiftTonnes: 50m, Status: CraneStatus.Lifting,
+            LiftingContainerId: "MSCU1234567"),
         new(Id: 2, DockNumber: 2, MaxLiftTonnes: 50m, Status: CraneStatus.Idle),
         new(Id: 3, DockNumber: 2, MaxLiftTonnes: 80m, Status: CraneStatus.Maintenance),
     ];

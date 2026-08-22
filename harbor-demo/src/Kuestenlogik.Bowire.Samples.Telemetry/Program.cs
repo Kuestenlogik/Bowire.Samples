@@ -52,9 +52,17 @@ _ = Task.Run(async () =>
     {
         foreach (var crane in cranes)
         {
+            // containerId is what joins this stream to the rest of the demo.
+            // Without it the only value shared with any other step is the
+            // integer on craneId, which the correlation analyzer rejects — and
+            // should: a short number appearing in two payloads is a
+            // coincidence, and accepting it would fuse unrelated flows. A crane
+            // that says which container it is lifting supplies real evidence
+            // instead, which is what this demo exists to show.
             var payload = JsonSerializer.Serialize(new
             {
                 craneId = crane.Id,
+                containerId = crane.LiftingContainerId,
                 status = crane.Status.ToString(),
                 boomAngleDeg = Math.Round(rng.NextDouble() * 90, 1),
                 loadTonnes = Math.Round(rng.NextDouble() * (double)crane.MaxLiftTonnes, 1),

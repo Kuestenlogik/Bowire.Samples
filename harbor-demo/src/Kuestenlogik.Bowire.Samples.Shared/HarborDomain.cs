@@ -52,11 +52,22 @@ public sealed record Dock(
     bool HasCrane,
     int? OccupiedByShipId);
 
+// A crane that is lifting names the container it has hold of. That field is
+// what lets the telemetry stream join the rest of the landscape: `Id` is a
+// small integer, and a small integer appearing in two payloads is a
+// coincidence, not evidence — the correlation analyzer rejects it, correctly.
+// A container id is distinctive and already flows through the REST and GraphQL
+// steps, so the crane naming one is what turns the telemetry into part of the
+// same story rather than a lane of its own.
+//
+// Null unless Status is Lifting: an idle crane holds nothing, and inventing an
+// id for it would be the same coincidence problem in a different costume.
 public sealed record Crane(
     int Id,
     int DockNumber,
     decimal MaxLiftTonnes,
-    CraneStatus Status);
+    CraneStatus Status,
+    string? LiftingContainerId = null);
 
 public sealed record Container(
     string Id,

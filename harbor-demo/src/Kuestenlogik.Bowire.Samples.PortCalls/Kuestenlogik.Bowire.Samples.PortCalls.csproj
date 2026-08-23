@@ -5,7 +5,7 @@
     <!-- gRPC *client* to Fleet (the BFF fan-out talks gRPC + OData + REST). -->
     <PackageReference Include="Grpc.Net.Client" Version="2.83.0" />
     <PackageReference Include="Grpc.Tools" Version="2.83.0" PrivateAssets="All" />
-    <PackageReference Include="Google.Protobuf" Version="3.35.1" />
+    <PackageReference Include="Google.Protobuf" Version="3.36.0" />
     <ProjectReference Include="..\Kuestenlogik.Bowire.Samples.Shared\Kuestenlogik.Bowire.Samples.Shared.csproj" />
   </ItemGroup>
   <ItemGroup>

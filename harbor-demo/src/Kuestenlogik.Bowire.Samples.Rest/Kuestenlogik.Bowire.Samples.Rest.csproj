@@ -2,7 +2,7 @@
   <ItemGroup>
     <PackageReference Include="Kuestenlogik.Bowire" Version="2.5.0" />
     <PackageReference Include="Kuestenlogik.Bowire.Protocol.Rest" Version="2.5.0" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.11" />
     <ProjectReference Include="..\Kuestenlogik.Bowire.Samples.Shared\Kuestenlogik.Bowire.Samples.Shared.csproj" />
   </ItemGroup>
 </Project>

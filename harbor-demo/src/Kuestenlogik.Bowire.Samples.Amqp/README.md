@@ -52,7 +52,17 @@ Bowire receives the same messages because the exchange fans out to every bound q
 
 ## AMQP 1.0 variant
 
-For AMQP 1.0 (Solace, Azure Service Bus, Artemis, …) connect Bowire at `amqp1://broker:5672` instead. The Bowire AMQP plugin picks the wire from the URL scheme; the publisher pattern stays the same, only the client library swaps (`AMQPNetLite` instead of `RabbitMQ.Client`). See the [TacticalAPI sample](../Kuestenlogik.Bowire.Samples.TacticalApi/README.md) for an analogous-shaped sample, plus the [plugin repo's README](https://github.com/Kuestenlogik/Bowire.Protocol.Amqp) for the URL-scheme reference.
+`docker compose up` also starts an ActiveMQ Artemis broker on **5673**, which speaks AMQP 1.0. Point Bowire at it with the `amqp1://` scheme:
+
+```
+amqp1://bowire:bowire@localhost:5673
+```
+
+The plugin picks the wire from the URL scheme. The publisher pattern stays the same; only the client library swaps (`AMQPNetLite` instead of `RabbitMQ.Client`).
+
+Discovery works differently on this wire, because AMQP 1.0 defines none. The plugin asks the broker instead, with the credentials the connection already carries: Artemis answers management requests over the AMQP connection itself, so every address becomes a service with `send`, and every queue bound to it becomes a `receive:<queue>`. Azure Service Bus is recognised by its hostname and answers over its ATOM management feed instead; anything else keeps a generic `Broker` service with `send` + `receive`, addressed through the `address` metadata key. A fresh Artemis has only `DLQ` and `ExpiryQueue` until something publishes, so send once and the sidebar fills in.
+
+See the [plugin repo's README](https://github.com/Kuestenlogik/Bowire.Protocol.Amqp) for the URL-scheme reference and the `?_amqp10Discovery=` per-connection override, and the [TacticalAPI sample](../Kuestenlogik.Bowire.Samples.TacticalApi/README.md) for an analogous-shaped sample.
 
 ## Teardown
 

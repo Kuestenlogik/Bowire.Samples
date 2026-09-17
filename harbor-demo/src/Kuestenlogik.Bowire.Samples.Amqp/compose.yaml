@@ -1,11 +1,16 @@
-# RabbitMQ broker for the AMQP sample.
+# The two brokers this sample can be pointed at, one per AMQP wire.
 #
-# Unlike MQTTnet, .NET has no in-process AMQP 0.9.1 broker, so this
-# sample relies on the official RabbitMQ image. The :management tag
-# bundles the HTTP Management API on :15672 — Bowire's AMQP plugin
-# uses that API for topology discovery (queues, exchanges, bindings),
-# so leaving it on makes the workbench's sidebar populate without
-# extra wiring.
+# Unlike MQTTnet, .NET has no in-process AMQP broker, so both are real
+# images.
+#
+#   * RabbitMQ speaks AMQP 0.9.1. The :management tag bundles the HTTP
+#     Management API on :15672 — Bowire's AMQP plugin reads topology
+#     (queues, exchanges, bindings) from there, so leaving it on makes
+#     the workbench's sidebar populate without extra wiring.
+#   * Artemis speaks AMQP 1.0, and answers management requests over the
+#     AMQP connection itself, so :5673 is the only port the plugin
+#     needs. It is mapped off 5672 so both brokers can run at once.
+#     The console on :8161 is for a human, not for the plugin.
 
 services:
   rabbitmq:
@@ -22,3 +27,22 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
+  artemis:
+    image: apache/activemq-artemis:2.42.0
+    container_name: bowire-samples-artemis
+    ports:
+      - "5673:5672"   # AMQP 1.0 (amqp1://)
+      - "8161:8161"   # Artemis console (not used by the plugin)
+    environment:
+      ARTEMIS_USER: bowire
+      ARTEMIS_PASSWORD: bowire
+      ANONYMOUS_LOGIN: "false"
+    healthcheck:
+      # AMQ221007 is the broker saying it is serving. The console lines
+      # that follow belong to a different subsystem and can lag, so
+      # waiting on those makes the healthcheck hang.
+      test: ["CMD-SHELL", "grep -q AMQ221007 /var/lib/artemis-instance/log/artemis.log || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 20

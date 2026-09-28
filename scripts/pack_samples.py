@@ -91,6 +91,22 @@ def references(csproj: Path, seen: set[Path] | None = None) -> set[Path]:
     return seen
 
 
+def hosts_workbench(csproj: Path) -> bool:
+    """Whether the sample serves the Bowire workbench itself (MapBowire) — not all do."""
+    return any("MapBowire" in cs.read_text(encoding="utf-8") for cs in csproj.parent.rglob("*.cs")
+               if not any(part in SKIP_DIRS for part in cs.relative_to(csproj.parent).parts))
+
+
+def browse_hint(csproj: Path) -> str | None:
+    """How the sample says to browse it with a standalone Bowire, if it does."""
+    for f in (csproj.parent / "Program.cs", csproj.parent / "README.md"):
+        if f.is_file():
+            m = re.search(r"bowire --url [^\s`\"]+", f.read_text(encoding="utf-8"))
+            if m:
+                return m.group(0)
+    return None
+
+
 def urls(csproj: Path) -> list[str]:
     settings = csproj.parent / "appsettings.json"
     if not settings.is_file():
@@ -210,6 +226,13 @@ def readme(csproj: Path, name: str, version: str, sample_urls: list[str], node: 
     own = csproj.parent / "README.md"
     text = own.read_text(encoding="utf-8").rstrip() if own.is_file() else f"# {name}\n\nThe `{csproj.stem}` sample."
     where = ", ".join(sample_urls) if sample_urls else "the URLs in app/appsettings.json"
+    hint = browse_hint(csproj)
+    browse = (
+        "the workbench is at `/bowire` there"
+        if hosts_workbench(csproj)
+        else "it hosts no workbench of its own — browse it with a standalone Bowire"
+        + (f": `{hint}`" if hint else "")
+    )
     if node:
         return text + f"""
 
@@ -224,7 +247,7 @@ This is the `{name}` sample from Bowire.Samples {version}. Its server is Node.js
 run.cmd         # Windows
 ```
 
-The first start installs its dependencies (`npm ci`); it then listens on {where}. `src/` has the source. Links to other samples point into the repository: https://github.com/Kuestenlogik/Bowire.Samples
+The first start installs its dependencies (`npm ci`); it then listens on {where} — {browse}. `src/` has the source. Links to other samples point into the repository: https://github.com/Kuestenlogik/Bowire.Samples
 """
     return text + f"""
 
@@ -239,13 +262,13 @@ This is the `{name}` sample from Bowire.Samples {version}, ready to run. You nee
 run.cmd         # Windows
 ```
 
-It listens on {where}; the workbench is at `/bowire` there. On first start the script makes a self-signed certificate for localhost (in `cert/`), so the browser asks you to accept it once.
+It listens on {where}; {browse}. On first start the script makes a self-signed certificate for localhost (in `cert/`), so the browser asks you to accept it once.
 
 `src/` has the source, with the projects it references and the repository's build files: `dotnet run --project src/{csproj.relative_to(ROOT).as_posix()}` builds and runs it with the SDK. Links to other samples point into the repository: https://github.com/Kuestenlogik/Bowire.Samples
 """
 
 
-def pack(version: str, out: Path, only: set[str] | None) -> list[tuple[Path, list[str], bool]]:
+def pack(version: str, out: Path, only: set[str] | None) -> list[tuple[Path, list[str], bool, bool]]:
     out.mkdir(parents=True, exist_ok=True)
     packed = []
     with tempfile.TemporaryDirectory() as scratch:
@@ -292,18 +315,18 @@ def pack(version: str, out: Path, only: set[str] | None) -> list[tuple[Path, lis
                             info.external_attr = (0o755 & 0xFFFF) << 16
                         with open(f, "rb") as fh:
                             z.writestr(info, fh.read(), zipfile.ZIP_DEFLATED)
-            packed.append((archive, sample_urls, node))
+            packed.append((archive, sample_urls, node, hosts_workbench(csproj)))
             print(f"packed {archive.name}", flush=True)
     return packed
 
 
-def smoke(packed: list[tuple[Path, list[str], bool]], timeout: float) -> list[str]:
+def smoke(packed: list[tuple[Path, list[str], bool, bool]], timeout: float) -> list[str]:
     """Start each archive with its own run.sh; its first URL has to answer."""
     failed = []
     insecure = ssl.create_default_context()
     insecure.check_hostname = False
     insecure.verify_mode = ssl.CERT_NONE
-    for archive, sample_urls, node in packed:
+    for archive, sample_urls, node, workbench in packed:
         if not sample_urls:
             print(f"smoke {archive.name}: no URL in appsettings.json, started only")
         with tempfile.TemporaryDirectory() as scratch:
@@ -323,11 +346,14 @@ def smoke(packed: list[tuple[Path, list[str], bool]], timeout: float) -> list[st
                     try:
                         # A .NET sample serves the workbench at /bowire; a Node
                         # server only has to answer at all.
-                        probe = sample_urls[0].rstrip("/") + ("/" if node else "/bowire")
+                        # A sample that serves the workbench has to serve it: /bowire
+                        # must answer 2xx. One that doesn't only has to be listening —
+                        # any HTTP answer, a 404 included, means it is up.
+                        probe = sample_urls[0].rstrip("/") + ("/bowire" if workbench else "/")
                         with urllib.request.urlopen(probe, timeout=3, context=insecure) as r:
-                            ok = r.status < 500
+                            ok = 200 <= r.status < 300 if workbench else True
                     except urllib.error.HTTPError as e:
-                        ok = e.code < 500
+                        ok = not workbench and e.code < 500
                     except OSError:
                         ok = False
                     if ok:
@@ -339,7 +365,8 @@ def smoke(packed: list[tuple[Path, list[str], bool]], timeout: float) -> list[st
                     proc.wait(10)
                 except subprocess.TimeoutExpired:
                     os.killpg(proc.pid, signal.SIGKILL)
-            print(f"smoke {archive.name}: {'ok' if ok else 'FAILED'}", flush=True)
+            what = "workbench at /bowire" if workbench else "listening"
+            print(f"smoke {archive.name}: {'ok' if ok else 'FAILED'} ({what})", flush=True)
             if not ok:
                 log.seek(0)
                 print(log.read()[-3000:])

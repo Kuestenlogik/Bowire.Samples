@@ -1,6 +1,6 @@
 # Kuestenlogik.Bowire.Samples.OData
 
-Isolated **OData v4** sample on `https://localhost:5116/bowire`. Metadata at `/odata/$metadata`.
+Isolated **OData v4** sample on `https://localhost:5116`. Metadata at `/odata/$metadata`. It hosts no workbench of its own — browse it with a standalone Bowire: `bowire --url 'https://localhost:5116/odata/$metadata'`.
 
 ## What this demonstrates
 

@@ -1,6 +1,6 @@
 # Kuestenlogik.Bowire.Samples.Mcp
 
-Isolated **Model Context Protocol** sample on `https://localhost:5119/bowire`.
+Isolated **Model Context Protocol** sample on `https://localhost:5119`. It hosts no workbench of its own — browse it with a standalone Bowire: `bowire --url https://localhost:5119/`.
 
 Any MCP-aware agent (Claude Desktop, Cursor, Bowire's own MCP client) can call the harbor tools without knowing that gRPC / REST / etc. exist underneath.
 

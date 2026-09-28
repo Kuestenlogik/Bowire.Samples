@@ -1,6 +1,6 @@
 # Kuestenlogik.Bowire.Samples.GraphQL
 
-Isolated **GraphQL-only** sample on `https://localhost:5115/bowire` (schema at `/graphql`).
+Isolated **GraphQL-only** sample on `https://localhost:5115` (schema at `/graphql`). It hosts no workbench of its own — browse it with a standalone Bowire: `bowire --url https://localhost:5115/graphql`.
 
 ## What this demonstrates
 

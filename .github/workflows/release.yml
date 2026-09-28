@@ -1,0 +1,38 @@
+name: Release
+
+# One GitHub Release per tag, carrying every sample as its own ready-to-run
+# download (#92). The tags come from the Bowire cascade
+# (auto-tag-on-bowire-merge, pushed with a token that triggers this) or by
+# hand. --smoke starts every archive before anything is published: a
+# release never carries a sample that does not start from its download.
+
+on:
+  push:
+    tags: ['v*']
+
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_NOLOGO: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Pack every sample
+        run: python3 scripts/pack_samples.py --version "${GITHUB_REF_NAME}" --smoke
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: artifacts/samples/*.zip

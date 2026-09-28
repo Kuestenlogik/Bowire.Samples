@@ -28,6 +28,11 @@ to Kestrel, and turn on Bowire:TrustLocalhostCert so the workbench inside the
 sample can call its own endpoints — a setting that only ever trusts
 localhost.
 
+A sample whose folder has a package.json with a start script is a Node
+sample (socket.io has no .NET server; its .NET project is a placeholder):
+app/ then holds the Node server, and run.sh/.cmd install and start it —
+Node.js is its prerequisite instead of the .NET runtime.
+
 Names carry no version, so releases/latest/download/<name> stays a stable
 link; the release tag and the README say which version it is.
 
@@ -163,10 +168,64 @@ dotnet {dll} %*
 """
 
 
-def readme(csproj: Path, name: str, version: str, sample_urls: list[str]) -> str:
+RUN_SH_NODE = """#!/bin/sh
+# Starts the {name} sample on {urls}. Needs Node.js 18+ (https://nodejs.org).
+set -e
+cd "$(dirname "$0")/app"
+[ -d node_modules ] || npm ci --omit=dev
+echo "{name}: {urls}  (Ctrl+C to stop)"
+exec npm start
+"""
+
+RUN_CMD_NODE = """@echo off
+rem Starts the {name} sample on {urls}. Needs Node.js 18+ (https://nodejs.org).
+setlocal
+cd /d "%~dp0app"
+if not exist node_modules call npm ci --omit=dev
+echo {name}: {urls}  (Ctrl+C to stop)
+npm start
+"""
+
+
+def node_sample(csproj: Path) -> bool:
+    """A sample whose server is Node, next to a placeholder .NET project (socket.io)."""
+    package = csproj.parent / "package.json"
+    if not package.is_file():
+        return False
+    try:
+        return "start" in (json.loads(package.read_text(encoding="utf-8")).get("scripts") or {})
+    except json.JSONDecodeError:
+        return False
+
+
+def node_urls(csproj: Path) -> list[str]:
+    for js in sorted(csproj.parent.glob("*.js")):
+        m = re.search(r"PORT[^\n]*?(\d{2,5})", js.read_text(encoding="utf-8"))
+        if m:
+            return [f"http://localhost:{m.group(1)}"]
+    return []
+
+
+def readme(csproj: Path, name: str, version: str, sample_urls: list[str], node: bool = False) -> str:
     own = csproj.parent / "README.md"
     text = own.read_text(encoding="utf-8").rstrip() if own.is_file() else f"# {name}\n\nThe `{csproj.stem}` sample."
     where = ", ".join(sample_urls) if sample_urls else "the URLs in app/appsettings.json"
+    if node:
+        return text + f"""
+
+---
+
+## Running this download
+
+This is the `{name}` sample from Bowire.Samples {version}. Its server is Node.js, not .NET — you need [Node.js 18+](https://nodejs.org).
+
+```sh
+./run.sh        # Linux / macOS
+run.cmd         # Windows
+```
+
+The first start installs its dependencies (`npm ci`); it then listens on {where}. `src/` has the source. Links to other samples point into the repository: https://github.com/Kuestenlogik/Bowire.Samples
+"""
     return text + f"""
 
 ---
@@ -186,7 +245,7 @@ It listens on {where}; the workbench is at `/bowire` there. On first start the s
 """
 
 
-def pack(version: str, out: Path, only: set[str] | None) -> list[tuple[Path, list[str]]]:
+def pack(version: str, out: Path, only: set[str] | None) -> list[tuple[Path, list[str], bool]]:
     out.mkdir(parents=True, exist_ok=True)
     packed = []
     with tempfile.TemporaryDirectory() as scratch:
@@ -199,22 +258,31 @@ def pack(version: str, out: Path, only: set[str] | None) -> list[tuple[Path, lis
             folder = f"{PREFIX}-{name}"
             tree = Path(scratch) / folder
             app = tree / "app"
-            print(f"::group::publish {name}", flush=True)
-            result = subprocess.run(["dotnet", "publish", str(csproj), "-c", "Release", "-o", str(app), "-nologo"])
-            print("::endgroup::", flush=True)
-            if result.returncode != 0:
-                raise SystemExit(f"publish failed: {csproj}")
+            node = node_sample(csproj)
+            if node:
+                # The .NET project is a placeholder; the sample is the Node server.
+                app.mkdir(parents=True)
+                for f in csproj.parent.iterdir():
+                    if f.is_file() and (f.suffix in (".js", ".mjs") or f.name in ("package.json", "package-lock.json")):
+                        shutil.copy2(f, app / f.name)
+            else:
+                print(f"::group::publish {name}", flush=True)
+                result = subprocess.run(["dotnet", "publish", str(csproj), "-c", "Release", "-o", str(app), "-nologo"])
+                print("::endgroup::", flush=True)
+                if result.returncode != 0:
+                    raise SystemExit(f"publish failed: {csproj}")
             for project in references(csproj):
                 copy_tree(project.parent, tree / "src" / project.parent.relative_to(ROOT))
             for f in BUILD_FILES:
                 if (ROOT / f).is_file():
                     shutil.copy2(ROOT / f, tree / "src" / f)
-            sample_urls = urls(csproj)
+            sample_urls = node_urls(csproj) if node else urls(csproj)
             shown = ", ".join(sample_urls) or "the URLs in app/appsettings.json"
             dll = csproj.stem + ".dll"
-            (tree / "run.sh").write_text(RUN_SH.format(name=name, urls=shown, dll=dll), encoding="utf-8", newline="\n")
-            (tree / "run.cmd").write_text(RUN_CMD.format(name=name, urls=shown, dll=dll), encoding="utf-8", newline="\r\n")
-            (tree / "README.md").write_text(readme(csproj, name, version, sample_urls), encoding="utf-8")
+            sh, cmd = (RUN_SH_NODE, RUN_CMD_NODE) if node else (RUN_SH, RUN_CMD)
+            (tree / "run.sh").write_text(sh.format(name=name, urls=shown, dll=dll), encoding="utf-8", newline="\n")
+            (tree / "run.cmd").write_text(cmd.format(name=name, urls=shown, dll=dll), encoding="utf-8", newline="\r\n")
+            (tree / "README.md").write_text(readme(csproj, name, version, sample_urls, node), encoding="utf-8")
             archive = out / f"{folder}.zip"
             with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as z:
                 for f in sorted(tree.rglob("*")):
@@ -224,18 +292,18 @@ def pack(version: str, out: Path, only: set[str] | None) -> list[tuple[Path, lis
                             info.external_attr = (0o755 & 0xFFFF) << 16
                         with open(f, "rb") as fh:
                             z.writestr(info, fh.read(), zipfile.ZIP_DEFLATED)
-            packed.append((archive, sample_urls))
+            packed.append((archive, sample_urls, node))
             print(f"packed {archive.name}", flush=True)
     return packed
 
 
-def smoke(packed: list[tuple[Path, list[str]]], timeout: float) -> list[str]:
+def smoke(packed: list[tuple[Path, list[str], bool]], timeout: float) -> list[str]:
     """Start each archive with its own run.sh; its first URL has to answer."""
     failed = []
     insecure = ssl.create_default_context()
     insecure.check_hostname = False
     insecure.verify_mode = ssl.CERT_NONE
-    for archive, sample_urls in packed:
+    for archive, sample_urls, node in packed:
         if not sample_urls:
             print(f"smoke {archive.name}: no URL in appsettings.json, started only")
         with tempfile.TemporaryDirectory() as scratch:
@@ -253,7 +321,10 @@ def smoke(packed: list[tuple[Path, list[str]]], timeout: float) -> list[str]:
                         break
                 else:
                     try:
-                        with urllib.request.urlopen(sample_urls[0].rstrip("/") + "/bowire", timeout=3, context=insecure) as r:
+                        # A .NET sample serves the workbench at /bowire; a Node
+                        # server only has to answer at all.
+                        probe = sample_urls[0].rstrip("/") + ("/" if node else "/bowire")
+                        with urllib.request.urlopen(probe, timeout=3, context=insecure) as r:
                             ok = r.status < 500
                     except urllib.error.HTTPError as e:
                         ok = e.code < 500

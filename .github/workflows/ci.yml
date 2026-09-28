@@ -32,3 +32,21 @@ jobs:
 
       - name: Build
         run: dotnet build Bowire.Samples.slnx -c Release --no-restore
+
+  # The per-sample downloads (#92), as a user gets them: every sample
+  # published, packed with its run scripts, extracted on its own and
+  # started with run.sh until its port answers. The release uploads the
+  # same archives; this is the dry run, so a sample that only runs inside
+  # the repository fails here, not after the tag. Its own job: it takes a
+  # few minutes, and the required `build` check should not wait for it.
+  downloads:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Pack and start every sample download
+        run: python3 scripts/pack_samples.py --version pr --smoke

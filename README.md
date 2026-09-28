@@ -92,6 +92,16 @@ service to capture a servable gRPC step.
  PortCall      Scheduled -> Approaching -> Docked -> Departing -> Completed  (or Cancelled)
 ```
 
+## Download a single sample
+
+Every sample is also a download of its own, ready to run, on the [Releases page](https://github.com/Kuestenlogik/Bowire.Samples/releases/latest) — no clone, no SDK: `bowire-samples-<sample>.zip` holds the published sample, its source and a `run.sh` / `run.cmd`. With the [.NET runtime](https://dotnet.microsoft.com/download) installed:
+
+```bash
+./run.sh     # or run.cmd on Windows
+```
+
+It listens on the same port as below; on first start the script makes a self-signed localhost certificate. The latest of each is at `https://github.com/Kuestenlogik/Bowire.Samples/releases/latest/download/bowire-samples-<sample>.zip`, e.g. [`bowire-samples-mqtt.zip`](https://github.com/Kuestenlogik/Bowire.Samples/releases/latest/download/bowire-samples-mqtt.zip); `combined` is the whole harbor demo in one process.
+
 ## Running
 
 Build everything once:

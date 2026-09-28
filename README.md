@@ -100,7 +100,7 @@ Every sample is also a download of its own, ready to run, on the [Releases page]
 ./run.sh     # or run.cmd on Windows
 ```
 
-It listens on the same port as below; on first start the script makes a self-signed localhost certificate. The latest of each is at `https://github.com/Kuestenlogik/Bowire.Samples/releases/latest/download/bowire-samples-<sample>.zip`, e.g. [`bowire-samples-mqtt.zip`](https://github.com/Kuestenlogik/Bowire.Samples/releases/latest/download/bowire-samples-mqtt.zip); `combined` is the whole harbor demo in one process.
+It listens on the same port as below (samples without a workbench of their own name the `bowire --url` to browse them with); on first start the script makes a self-signed localhost certificate. The latest of each is at `https://github.com/Kuestenlogik/Bowire.Samples/releases/latest/download/bowire-samples-<sample>.zip`, e.g. [`bowire-samples-mqtt.zip`](https://github.com/Kuestenlogik/Bowire.Samples/releases/latest/download/bowire-samples-mqtt.zip); `combined` is the whole harbor demo in one process.
 
 ## Running
 
@@ -119,11 +119,11 @@ dotnet run --project src/Kuestenlogik.Bowire.Samples.Rest         # https://loca
 dotnet run --project src/Kuestenlogik.Bowire.Samples.SignalR      # https://localhost:5112/bowire
 dotnet run --project src/Kuestenlogik.Bowire.Samples.WebSocket    # https://localhost:5113/bowire
 dotnet run --project src/Kuestenlogik.Bowire.Samples.Sse          # https://localhost:5114/bowire
-dotnet run --project src/Kuestenlogik.Bowire.Samples.GraphQL      # https://localhost:5115/bowire
-dotnet run --project src/Kuestenlogik.Bowire.Samples.OData        # https://localhost:5116/bowire
-dotnet run --project src/Kuestenlogik.Bowire.Samples.Mqtt         # https://localhost:5117/bowire (broker on :1883)
-dotnet run --project src/Kuestenlogik.Bowire.Samples.SocketIo     # https://localhost:5118/bowire
-dotnet run --project src/Kuestenlogik.Bowire.Samples.Mcp          # https://localhost:5119/bowire
+dotnet run --project src/Kuestenlogik.Bowire.Samples.GraphQL      # https://localhost:5115 — no workbench: bowire --url https://localhost:5115/graphql
+dotnet run --project src/Kuestenlogik.Bowire.Samples.OData        # https://localhost:5116 — no workbench: bowire --url 'https://localhost:5116/odata/$metadata'
+dotnet run --project src/Kuestenlogik.Bowire.Samples.Mqtt         # broker on :1883 — no workbench: bowire --url mqtt://localhost:1883
+node harbor-demo/src/Kuestenlogik.Bowire.Samples.SocketIo/server.js  # Node, :3000 (npm install first) — bowire --url http://localhost:3000
+dotnet run --project src/Kuestenlogik.Bowire.Samples.Mcp          # https://localhost:5119 — no workbench: bowire --url https://localhost:5119/
 ```
 
 ## Prerequisites: pack Bowire locally

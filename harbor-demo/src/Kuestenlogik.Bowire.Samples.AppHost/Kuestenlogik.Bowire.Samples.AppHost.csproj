@@ -1,9 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Sdk Name="Aspire.AppHost.Sdk" Version="13.4.6" />
+  <!-- The AppHost SDK and Aspire.Hosting.AppHost move together: the SDK names the
+       Aspire CLI version the AppHost runs through (aspire.cli@<SDK version>). -->
+  <Sdk Name="Aspire.AppHost.Sdk" Version="13.6.1" />
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
+    <!-- DCP and the dashboard come from the Aspire CLI bundle (an `aspire` on PATH,
+         otherwise the SDK-paired aspire.cli package through dnx), not from NuGet
+         packages restored per platform. Leaving it false raises ASPIRE010:
+         https://aspire.dev/diagnostics/aspire010/ -->
+    <AspireUseCliBundle>true</AspireUseCliBundle>
   </PropertyGroup>
 
   <ItemGroup>

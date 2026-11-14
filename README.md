@@ -126,16 +126,28 @@ node harbor-demo/src/Kuestenlogik.Bowire.Samples.SocketIo/server.js  # Node, :30
 dotnet run --project src/Kuestenlogik.Bowire.Samples.Mcp          # https://localhost:5119 — no workbench: bowire --url https://localhost:5119/
 ```
 
-## Prerequisites: pack Bowire locally
+## Packages
 
-Samples reference `Kuestenlogik.Bowire` + `Kuestenlogik.Bowire.Protocol.*` as **NuGet packages**, not `ProjectReference`. The shipped `nuget.config` wires a `local` feed at `../Bowire/artifacts/packages/`, and per-project package versions are pinned to `0.9.4`.
+Samples reference `Kuestenlogik.Bowire` + `Kuestenlogik.Bowire.Protocol.*` as **NuGet packages**, not `ProjectReference`. Each project pins the released version, and `nuget.config` restores everything from nuget.org. A fresh clone builds without packing anything.
 
-To repack with a newer version, bump the `Version=` below and update the `PackageReference` in each csproj:
+### Trying an unreleased Bowire
 
-```bash
-cd ../Bowire
-dotnet pack Kuestenlogik.Bowire.slnx -c Release -p:Version=0.9.4
-```
+To run the samples against a Bowire that is not released yet, pack it into a folder and point the samples at that folder. Keep these changes out of commits: no other clone can restore them.
+
+1. Pack Bowire under a version of its own. Bowire takes its version from the git tag through MinVer, so the override is `MinVerVersionOverride`, not `Version`:
+
+   ```bash
+   cd ../Bowire
+   dotnet pack Kuestenlogik.Bowire.slnx -c Release -p:MinVerVersionOverride=2.11.0-local.1 -o ../bowire-local-feed
+   ```
+
+2. Add the folder as a source in `nuget.config`, after `<clear />`:
+
+   ```xml
+   <add key="bowire-local" value="../bowire-local-feed" />
+   ```
+
+3. Set the `Version` of the `Kuestenlogik.Bowire*` references to the packed version, in the projects you want to run. Packages that a sibling repository publishes on its own version line (e.g. `Kuestenlogik.Bowire.Protocol.Amqp`) stay as they are.
 
 ## Per-sample detail
 

@@ -5,11 +5,22 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <!-- Build output goes to artifacts/ through the SDK's own artifacts layout
+       (`UseArtifactsOutput`), not through hand-set output paths.
+
+       Hand-set paths that append $(Configuration) break here: this file is
+       imported before the SDK defaults Configuration to Debug, so a plain
+       `dotnet build` wrote to `artifacts/bin/<Project>/` with no configuration
+       folder, while `dotnet run -c Debug` looked in `.../<Project>/Debug/`.
+       The Aspire AppHost starts every service with
+       `dotnet run` in the Debug configuration without building, found no executable, and
+       the whole landscape ended right after it started.
+
+       The SDK resolves the pivot after Configuration is known: `dotnet build`
+       and `dotnet build -c Release` land in `artifacts/bin/<Project>/debug/`
+       and `.../release/`. -->
   <PropertyGroup>
-    <ArtifactsPath>$(MSBuildThisFileDirectory)artifacts\</ArtifactsPath>
-    <BaseIntermediateOutputPath>$(ArtifactsPath)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
-    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
-    <BaseOutputPath>$(ArtifactsPath)bin\$(MSBuildProjectName)\</BaseOutputPath>
-    <OutputPath>$(BaseOutputPath)$(Configuration)\</OutputPath>
+    <UseArtifactsOutput>true</UseArtifactsOutput>
+    <ArtifactsPath>$(MSBuildThisFileDirectory)artifacts</ArtifactsPath>
   </PropertyGroup>
 </Project>

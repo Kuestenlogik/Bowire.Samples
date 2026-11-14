@@ -35,7 +35,7 @@
   <PropertyGroup>
     <TacticalApiProtoSha>e68546809d981cd649325dba4a9702c1a77a1a0b</TacticalApiProtoSha>
     <TacticalApiProtoBaseUrl>https://raw.githubusercontent.com/Rheinmetall/tacticalapi/$(TacticalApiProtoSha)/rheinmetall/tactical_api/v0</TacticalApiProtoBaseUrl>
-    <TacticalApiProtoRoot>$(IntermediateOutputPath)tacticalapi-protos\</TacticalApiProtoRoot>
+    <TacticalApiProtoRoot>$(BaseIntermediateOutputPath)tacticalapi-protos\</TacticalApiProtoRoot>
     <TacticalApiProtoDir>$(TacticalApiProtoRoot)rheinmetall\tactical_api\v0\</TacticalApiProtoDir>
   </PropertyGroup>
 

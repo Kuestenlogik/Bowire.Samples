@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <!-- The AppHost SDK and Aspire.Hosting.AppHost move together: the SDK names the
        Aspire CLI version the AppHost runs through (aspire.cli@<SDK version>). -->
-  <Sdk Name="Aspire.AppHost.Sdk" Version="13.6.1" />
+  <Sdk Name="Aspire.AppHost.Sdk" Version="13.6.5" />
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting.AppHost" Version="13.6.4" />
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="13.6.5" />
   </ItemGroup>
 
   <ItemGroup>
